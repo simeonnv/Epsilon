@@ -1,5 +1,4 @@
 import { Title } from "@solidjs/meta";
-
 import { For } from "solid-js";
 
 import { Button } from "@/components/ui/button"
@@ -37,7 +36,8 @@ import { createAutoAnimate } from '@formkit/auto-animate/solid'
 import { onMount, createSignal, createEffect, Show } from "solid-js";
 import { x } from "node_modules/@kobalte/core/dist/index-e295f8da";
 
-
+import { signupAuth } from "./lib/auth/signupAuth"
+import { verifyCredentails } from "./lib/auth/verifyCredentials";
 
 export default function signup() {
 
@@ -49,9 +49,12 @@ export default function signup() {
   const [passwordValidation, setPasswordValidation] = createSignal(true)
   const [repeatPasswordValidation, setRepeatPasswordValidation] = createSignal(true)
 
+  
   createEffect(() => {
+    console.log(username())
+    console.log(password())
+    console.log(repeatPassword())
 
-    
 
     if (password() != repeatPassword())
       if (repeatPassword() != "")
@@ -59,16 +62,25 @@ export default function signup() {
       else
         setRepeatPasswordValidation(true)
 
-    console.log(username())
-    console.log(password())
-    console.log(repeatPassword())
+    const verification: boolean[] = verifyCredentails(username(), password())
+
+    if (verification[0])
+      setUsernameValidation(true)
+    else
+      setUsernameValidation(false)
+
+    if (verification[1])
+      setPasswordValidation(true)
+    else
+      setPasswordValidation(false)
+
+
+
   });
 
-  const [parent] = createAutoAnimate({ duration: 700 })
-
-  console.log(username())
-  console.log(password())
-  console.log(repeatPassword())
+  const [usernameAnimation] = createAutoAnimate({ duration: 700 })
+  const [passwordAnimation] = createAutoAnimate({ duration: 700 })
+  const [repeatedPasswordAnimation] = createAutoAnimate({ duration: 700 })
 
   const validate = (val: boolean) => {
     if (val) {
@@ -77,7 +89,6 @@ export default function signup() {
     else
       return "invalid"
   }
-
 
   return (
     <div>
@@ -97,15 +108,23 @@ export default function signup() {
             </TextFieldRoot>
             <TextFieldRoot class="w-full max-w-xs" validationState="invalid">
               <TextField type="password" placeholder="Password" onChange={(e: any) => { setPassword(e.target.value) }} />
-              <TextFieldErrorMessage>Password is required</TextFieldErrorMessage>
+
+              <TextFieldErrorMessage>
+                <div ref={passwordAnimation}>
+                  <Show when={!passwordValidation()} keyed >
+                    Repeated password is
+                  </Show>
+                </div>
+              </TextFieldErrorMessage>
+            
             </TextFieldRoot>
             <TextFieldRoot class="w-full max-w-xs" validationState="invalid">
               <TextField type="password" placeholder="Repeat Password" onChange={(e: any) => { setRepeatPassword(e.target.value) }} />
 
               <TextFieldErrorMessage >
-                <div ref={parent}>
+                <div ref={repeatedPasswordAnimation}>
                   <Show when={!repeatPasswordValidation()} keyed >
-                      Repeated password is
+                    Repeated password is
                   </Show>
                 </div>
               </TextFieldErrorMessage>
