@@ -1,7 +1,7 @@
-"use server"
+
 
 import { Surreal } from "surrealdb.js";
-import { hash, compare } from 'bcryptjs';
+
 
 let db: Surreal | undefined;
 
@@ -9,12 +9,19 @@ export async function initDb(): Promise<Surreal | undefined> {
     if (db) return db;
     db = new Surreal();
     try {
-        await db.connect("http://localhost:8080/rpc");
-        await db.use({ namespace: "Epsilon", database: "Epsilon" });
+        console.log("init")
+        await db.connect('http://localhost:8080/rpc', {
+            namespace: 'Epsilon',
+	        database: 'Epsilon',
+            auth: {
+                username: 'root',
+                password: 'root',
+            },
+        });
 
         await db.let('account', {
             username: "Admin",
-            password: await hash("admin", 80)
+            password: "admin"
         });
         try {
 

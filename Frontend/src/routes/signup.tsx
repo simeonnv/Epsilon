@@ -64,23 +64,21 @@ export default function signup() {
 
     const verification: boolean[] = verifyCredentails(username(), password())
 
-    if (verification[0])
+    if (verification[0] || (username().length == 0))
       setUsernameValidation(true)
     else
       setUsernameValidation(false)
 
-    if (verification[1])
+    if (verification[1] || (password().length == 0))
       setPasswordValidation(true)
     else
       setPasswordValidation(false)
-
-
-
   });
 
   const [usernameAnimation] = createAutoAnimate({ duration: 700 })
   const [passwordAnimation] = createAutoAnimate({ duration: 700 })
   const [repeatedPasswordAnimation] = createAutoAnimate({ duration: 700 })
+  const [userTakenAnimation] = createAutoAnimate({ duration: 700 })
 
   const validate = (val: boolean) => {
     if (val) {
@@ -88,6 +86,17 @@ export default function signup() {
     }
     else
       return "invalid"
+  }
+
+  async function reqSignup()
+  {
+    console.log("am i working?")
+    if ((repeatPasswordValidation() && passwordValidation()) && usernameValidation())
+      return "incorrect credentials"
+   
+    const balls = await signupAuth(username(), password());
+    console.log(balls)
+    return balls
   }
 
   return (
@@ -104,7 +113,15 @@ export default function signup() {
           <CardContent class="grid gap-4  signup">
             <TextFieldRoot class="w-full max-w-xs " validationState="invalid" >
               <TextField type="username" placeholder="Username" onChange={(e: any) => { setUsername(e.target.value) }} />
-              <TextFieldErrorMessage >Username is required.</TextFieldErrorMessage>
+              
+              <TextFieldErrorMessage>
+                <div ref={usernameAnimation}>
+                  <Show when={!usernameValidation()} keyed >
+                    Incorrect password lenght
+                  </Show>
+                </div>
+              </TextFieldErrorMessage>
+
             </TextFieldRoot>
             <TextFieldRoot class="w-full max-w-xs" validationState="invalid">
               <TextField type="password" placeholder="Password" onChange={(e: any) => { setPassword(e.target.value) }} />
@@ -112,7 +129,7 @@ export default function signup() {
               <TextFieldErrorMessage>
                 <div ref={passwordAnimation}>
                   <Show when={!passwordValidation()} keyed >
-                    Repeated password is
+                    Incorrect password lenght
                   </Show>
                 </div>
               </TextFieldErrorMessage>
@@ -124,12 +141,18 @@ export default function signup() {
               <TextFieldErrorMessage >
                 <div ref={repeatedPasswordAnimation}>
                   <Show when={!repeatPasswordValidation()} keyed >
-                    Repeated password is
+                    Password missmatch
                   </Show>
                 </div>
               </TextFieldErrorMessage>
-
             </TextFieldRoot>
+
+            <div ref={userTakenAnimation} class="text-red-800 text-xs">
+              <Show when={true} keyed >
+                Username is taken
+              </Show>
+            </div>
+
             <Break text="Or continue with" />
             <div class="grid grid-cols-2 gap-4">
               <Button>
@@ -143,7 +166,7 @@ export default function signup() {
             </div>
           </CardContent>
           <CardFooter class=" signup">
-            <Button class="w-full">
+            <Button class="w-full" onclick={reqSignup}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="mr-2 h-4 w-4"
