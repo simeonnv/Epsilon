@@ -29,7 +29,8 @@ import {
   SwitchThumb,
 } from "@/components/ui/switch";
 
-import Break from "@/components/ui/Break"
+import BreakRedirect from "@/components/ui/BreakRedirect"
+import Break from "~/components/ui/Break";
 
 import { createAutoAnimate } from '@formkit/auto-animate/solid'
 
@@ -38,8 +39,11 @@ import { x } from "node_modules/@kobalte/core/dist/index-e295f8da";
 
 import { signupAuth } from "./lib/auth/signupAuth"
 import { verifyCredentails } from "./lib/auth/verifyCredentials";
+import { useNavigate} from "@solidjs/router";
 
 export default function signup() {
+
+  const navigate = useNavigate()
 
   const [username, setUsername] = createSignal("")
   const [password, setPassword] = createSignal("")
@@ -49,7 +53,7 @@ export default function signup() {
   const [passwordValidation, setPasswordValidation] = createSignal(true)
   const [repeatPasswordValidation, setRepeatPasswordValidation] = createSignal(true)
 
-  
+
   createEffect(() => {
     console.log(username())
     console.log(password())
@@ -61,8 +65,9 @@ export default function signup() {
         setRepeatPasswordValidation(false)
       else
         setRepeatPasswordValidation(true)
-
-    const verification: boolean[] = verifyCredentails(username(), password())
+    else
+      setRepeatPasswordValidation(true)
+    let verification: boolean[] = verifyCredentails(username(), password())
 
     if (verification[0] || (username().length == 0))
       setUsernameValidation(true)
@@ -88,15 +93,11 @@ export default function signup() {
       return "invalid"
   }
 
-  async function reqSignup()
-  {
+  async function reqSignup() {
     console.log("am i working?")
-    if ((repeatPasswordValidation() && passwordValidation()) && usernameValidation())
-      return "incorrect credentials"
-   
-    const balls = await signupAuth(username(), password());
-    console.log(balls)
-    return balls
+    const res = await signupAuth(username(), password());
+    if (res == "success")
+      navigate("/login", { replace: true });
   }
 
   return (
@@ -113,7 +114,7 @@ export default function signup() {
           <CardContent class="grid gap-4  signup">
             <TextFieldRoot class="w-full max-w-xs " validationState="invalid" >
               <TextField type="username" placeholder="Username" onChange={(e: any) => { setUsername(e.target.value) }} />
-              
+
               <TextFieldErrorMessage>
                 <div ref={usernameAnimation}>
                   <Show when={!usernameValidation()} keyed >
@@ -133,7 +134,7 @@ export default function signup() {
                   </Show>
                 </div>
               </TextFieldErrorMessage>
-            
+
             </TextFieldRoot>
             <TextFieldRoot class="w-full max-w-xs" validationState="invalid">
               <TextField type="password" placeholder="Repeat Password" onChange={(e: any) => { setRepeatPassword(e.target.value) }} />
@@ -164,6 +165,7 @@ export default function signup() {
                 Google
               </Button>
             </div>
+            <BreakRedirect text="or if you have a account" href="/login" />
           </CardContent>
           <CardFooter class=" signup">
             <Button class="w-full" onclick={reqSignup}>

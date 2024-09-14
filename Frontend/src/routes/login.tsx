@@ -1,6 +1,4 @@
 import { Title } from "@solidjs/meta";
-import { onMount } from "solid-js"
-
 import { For } from "solid-js";
 
 import { Button } from "@/components/ui/button"
@@ -31,59 +29,167 @@ import {
   SwitchThumb,
 } from "@/components/ui/switch";
 
-import Break from "@/components/ui/Break"
+import BreakRedirect from "@/components/ui/BreakRedirect"
+import Break from "~/components/ui/Break";
+
+import { createAutoAnimate } from '@formkit/auto-animate/solid'
+
+import { onMount, createSignal, createEffect, Show } from "solid-js";
+import { x } from "node_modules/@kobalte/core/dist/index-e295f8da";
+
+import { signupAuth } from "./lib/auth/signupAuth"
+import { verifyCredentails } from "./lib/auth/verifyCredentials";
+import { useNavigate } from "@solidjs/router";
+
+export default function signup() {
+
+  const navigate = useNavigate();
+  
+  const [username, setUsername] = createSignal("")
+  const [password, setPassword] = createSignal("")
+  const [repeatPassword, setRepeatPassword] = createSignal("")
+
+  const [usernameValidation, setUsernameValidation] = createSignal(true)
+  const [passwordValidation, setPasswordValidation] = createSignal(true)
+  const [repeatPasswordValidation, setRepeatPasswordValidation] = createSignal(true)
 
 
-export default function login() {
+  createEffect(() => {
+    console.log(username())
+    console.log(password())
+    console.log(repeatPassword())
+
+
+    if (password() != repeatPassword())
+      if (repeatPassword() != "")
+        setRepeatPasswordValidation(false)
+      else
+        setRepeatPasswordValidation(true)
+    else
+      setRepeatPasswordValidation(true)
+    let verification: boolean[] = verifyCredentails(username(), password())
+
+    if (verification[0] || (username().length == 0))
+      setUsernameValidation(true)
+    else
+      setUsernameValidation(false)
+
+    if (verification[1] || (password().length == 0))
+      setPasswordValidation(true)
+    else
+      setPasswordValidation(false)
+  });
+
+  const [usernameAnimation] = createAutoAnimate({ duration: 700 })
+  const [passwordAnimation] = createAutoAnimate({ duration: 700 })
+  const [repeatedPasswordAnimation] = createAutoAnimate({ duration: 700 })
+  const [userTakenAnimation] = createAutoAnimate({ duration: 700 })
+
+  const validate = (val: boolean) => {
+    if (val) {
+      return "valid"
+    }
+    else
+      return "invalid"
+  }
+
+  async function reqSignup() {
+    console.log("am i working?")
+    const res = await signupAuth(username(), password());
+    if (res == "success")
+      throw await navigate("/");
+    return
+  }
+
   return (
-    <main class="flex h-screen items-center justify-center dark bg-black">
-      <Card class="w-[380px] opacity-0" id="login">
-			<CardHeader class="login opacity-0">
-				<CardTitle class="text-2xl text-center">Login</CardTitle>
-				<CardDescription class="text-center">Please enter your credentials</CardDescription>
-			</CardHeader>
-			<CardContent class="grid gap-4 login opacity-0">
-        <TextFieldRoot class="w-full max-w-xs" validationState="valid">
-          <TextField type="email" placeholder="Email" />
-          <TextFieldErrorMessage>Email is required.</TextFieldErrorMessage>
-        </TextFieldRoot>
-        <TextFieldRoot class="w-full max-w-xs" validationState="valid">
-          <TextField type="password" placeholder="Password" />
-          <TextFieldErrorMessage>Password is required</TextFieldErrorMessage>
-        </TextFieldRoot>
-        <Break text="Or continue with"/>
-        <div class="grid grid-cols-2 gap-4">
-          <Button>
-            <GithubIcon class="mr-2 h-4 w-4" />
-            GitHub
-          </Button>
-          <Button>
-            <ChromeIcon class="mr-2 h-4 w-4" />
-            Google
-          </Button>
-        </div>
-			</CardContent>
-			<CardFooter class="login opacity-0">
-				<Button class="w-full">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="mr-2 h-4 w-4"
-						viewBox="0 0 24 24"
-					>
-						<path
-							fill="none"
-							stroke="currentColor"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="m5 12l5 5L20 7"
-						/>
-					</svg>
-					Login
-				</Button>
-			</CardFooter>
-		</Card>
-    </main>
+    <div>
+      <main class="flex h-screen items-center justify-center dark bg-black" >
+        <Card class="w-[380px] parent" id="signup">
+
+          <CardHeader class="signup">
+            <CardTitle class="text-2xl text-center">Login</CardTitle>
+            <CardDescription class="text-center">Please enter your credentials</CardDescription>
+          </CardHeader>
+
+
+          <CardContent class="grid gap-4  signup">
+            <TextFieldRoot class="w-full max-w-xs " validationState="invalid" >
+              <TextField type="username" placeholder="Username" onChange={(e: any) => { setUsername(e.target.value) }} />
+
+              <TextFieldErrorMessage>
+                <div ref={usernameAnimation}>
+                  <Show when={!usernameValidation()} keyed >
+                    Incorrect password lenght
+                  </Show>
+                </div>
+              </TextFieldErrorMessage>
+
+            </TextFieldRoot>
+            <TextFieldRoot class="w-full max-w-xs" validationState="invalid">
+              <TextField type="password" placeholder="Password" onChange={(e: any) => { setPassword(e.target.value) }} />
+
+              <TextFieldErrorMessage>
+                <div ref={passwordAnimation}>
+                  <Show when={!passwordValidation()} keyed >
+                    Incorrect password lenght
+                  </Show>
+                </div>
+              </TextFieldErrorMessage>
+
+            </TextFieldRoot>
+            <TextFieldRoot class="w-full max-w-xs" validationState="invalid">
+              <TextField type="password" placeholder="Repeat Password" onChange={(e: any) => { setRepeatPassword(e.target.value) }} />
+
+              <TextFieldErrorMessage >
+                <div ref={repeatedPasswordAnimation}>
+                  <Show when={!repeatPasswordValidation()} keyed >
+                    Password missmatch
+                  </Show>
+                </div>
+              </TextFieldErrorMessage>
+            </TextFieldRoot>
+
+            <div ref={userTakenAnimation} class="text-red-800 text-xs">
+              <Show when={true} keyed >
+                Username is taken
+              </Show>
+            </div>
+
+            <Break text="Or continue with" />
+            <div class="grid grid-cols-2 gap-4">
+              <Button>
+                <GithubIcon class="mr-2 h-4 w-4" />
+                GitHub
+              </Button>
+              <Button>
+                <ChromeIcon class="mr-2 h-4 w-4" />
+                Google
+              </Button>
+            </div>
+            <BreakRedirect text="or if you have a account" href="/login" />
+          </CardContent>
+          <CardFooter class=" signup">
+            <Button class="w-full" onclick={reqSignup}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="mr-2 h-4 w-4"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m5 12l5 5L20 7"
+                />
+              </svg>
+              Signup
+            </Button>
+          </CardFooter>
+        </Card>
+      </main>
+    </div>
   );
 }
 

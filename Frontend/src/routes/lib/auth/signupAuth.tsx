@@ -10,14 +10,26 @@ export async function signupAuth(username: string, password: string): Promise<st
     console.log("reak")
     console.log(db)
     const verification: boolean[] = verifyCredentails(username, password)
-    if( verification[0] && verification[1] )
+    console.log(verification)
+    if( !(verification[0] && verification[1]) )
         return "incorrect credentials"
     console.log("reak", 1)
     if (db == undefined)
         return "something failed"
     console.log("reak", 2)
-    if ( (await db.select(new RecordId("account", username))) != undefined )
-        return "account already exists"
+
+    await db.let('account', {
+        username: username,
+    });
+
+    const res:any = await db.query(` SELECT * FROM account WHERE username = $account.username `)
+    
+    if(await res[0].length != 0)
+        {await db.unset("account"); return "account already exists"}
+    else
+        await db.unset("account")
+
+
     console.log("reak", 3)
 
     await db.let('account', {
@@ -29,9 +41,7 @@ export async function signupAuth(username: string, password: string): Promise<st
 
     await db.query(`
 
-        DEFINE TABLE account SCHEMALESS
-
-        CREATE account:$account.username SET
+        CREATE account SET
             username = $account.username,
             password = $account.password,
             profilePicture = {}

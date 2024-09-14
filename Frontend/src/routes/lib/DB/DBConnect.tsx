@@ -1,7 +1,8 @@
 
 
 import { Surreal } from "surrealdb.js";
-
+import initTables from "./initTables";
+import queryStartData from "./queryStartData";
 
 let db: Surreal | undefined;
 
@@ -19,24 +20,14 @@ export async function initDb(): Promise<Surreal | undefined> {
             },
         });
 
-        await db.let('account', {
-            username: "Admin",
-            password: "admin"
-        });
         try {
-
-            await db.query(`
-
-            CREATE account:$account.username SET
-                username = $account.username,
-                password = $account.password,
-                profilePicture = {}
-            ;
-            
-            `);
-
+            initTables(db)
+            queryStartData(db)
         }
-        catch(err){}
+        catch(err)
+        {
+            console.error(err, "kys nigga")
+        }
         
 
         db.unset("account")
