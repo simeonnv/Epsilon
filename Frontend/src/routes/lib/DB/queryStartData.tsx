@@ -12,6 +12,8 @@ export default async function queryStartData(db: Surreal): Promise<boolean> {
         
     `)
     
+    console.log(res)
+
     await db.unset("account")
 
     if (res)

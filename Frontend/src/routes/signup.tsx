@@ -1,7 +1,5 @@
-import { Title } from "@solidjs/meta";
-import { For } from "solid-js";
-
 import { Button } from "@/components/ui/button"
+
 import {
   Card,
   CardContent,
@@ -10,32 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsIndicator,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+
 import {
   TextField,
   TextFieldLabel,
   TextFieldRoot,
   TextFieldErrorMessage,
 } from "@/components/ui/textfield";
-import {
-  Switch,
-  SwitchControl,
-  SwitchThumb,
-} from "@/components/ui/switch";
 
-import BreakRedirect from "@/components/ui/BreakRedirect"
+import BreakRedirect from "@/components/ui/BreakRedirect";
 import Break from "~/components/ui/Break";
 
 import { createAutoAnimate } from '@formkit/auto-animate/solid'
 
 import { onMount, createSignal, createEffect, Show } from "solid-js";
-import { x } from "node_modules/@kobalte/core/dist/index-e295f8da";
 
 import { signupAuth } from "./lib/auth/signupAuth"
 import { verifyCredentails } from "./lib/auth/verifyCredentials";
@@ -96,6 +82,7 @@ export default function signup() {
   async function reqSignup() {
     console.log("am i working?")
     const res = await signupAuth(username(), password());
+    
     if (res == "success")
       navigate("/login", { replace: true });
   }
@@ -154,7 +141,7 @@ export default function signup() {
               </Show>
             </div>
 
-            <Break text="Or continue with" />
+            <Break text="Or Signup with..." />
             <div class="grid grid-cols-2 gap-4">
               <Button>
                 <GithubIcon class="mr-2 h-4 w-4" />

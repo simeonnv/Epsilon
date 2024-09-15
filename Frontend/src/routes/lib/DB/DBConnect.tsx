@@ -1,4 +1,4 @@
-
+"use server"
 
 import { Surreal } from "surrealdb.js";
 import initTables from "./initTables";

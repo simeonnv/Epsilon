@@ -1,4 +1,4 @@
-
+"use server"
 import { verifyCredentails } from "./verifyCredentials";
 import { RecordId } from "surrealdb.js";
 import { initDb } from "../DB/DBConnect";
