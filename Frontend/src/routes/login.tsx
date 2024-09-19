@@ -27,6 +27,7 @@ import { onMount, createSignal, createEffect, Show } from "solid-js";
 import { verifyCredentails } from "./lib/auth/verifyCredentials";
 
 import { useNavigate } from "@solidjs/router";
+import loginAuth from "./lib/auth/loginAuth";
 
 export default function signup() {
 
@@ -37,9 +38,9 @@ export default function signup() {
 
   const [invalidCredentialAnimation] = createAutoAnimate({ duration: 700 })
 
-  function reqLogin()
+  async function reqLogin()
   {
-
+    console.log("pluh")
     let verification: boolean[] = verifyCredentails(username(), password())
 
     if (!(verification[0] || (username().length == 0)))
@@ -47,6 +48,11 @@ export default function signup() {
 
     if (!(verification[1] || (password().length == 0)))
       return // change
+
+    const res = await loginAuth(username(), password())
+    console.log(res)
+
+    return
     
   }
 
@@ -91,7 +97,7 @@ export default function signup() {
             <BreakRedirect text="or if you dont have an account" href="/signup" />
           </CardContent>
           <CardFooter>
-            <Button class="w-full">
+            <Button class="w-full" onclick={reqLogin}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="mr-2 h-4 w-4"

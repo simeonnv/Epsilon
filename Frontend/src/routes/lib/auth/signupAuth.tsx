@@ -1,22 +1,19 @@
-"use server"
+
 import { verifyCredentails } from "./verifyCredentials";
-import { RecordId } from "surrealdb.js";
-import { initDb } from "../DB/DBConnect";
+import { RecordId } from "surrealdb";
+import { getDb, initDb } from "../DB/DBConnect";
 
 
 export async function signupAuth(username: string, password: string): Promise<string>
 {
-    const db = await initDb()
-    console.log("reak")
-    console.log(db)
+    let db = await initDb()
     const verification: boolean[] = verifyCredentails(username, password)
-    console.log(verification)
+    
     if( !(verification[0] && verification[1]) )
         return "incorrect credentials"
-    console.log("reak", 1)
+    
     if (db == undefined)
         return "something failed"
-    console.log("reak", 2)
 
     await db.let('account', {
         username: username,
@@ -30,13 +27,10 @@ export async function signupAuth(username: string, password: string): Promise<st
         await db.unset("account")
 
 
-    console.log("reak", 3)
-
     await db.let('account', {
         username: username,
         password: password,
     });
-    console.log("reak", 4)
 
 
     await db.query(`
@@ -48,9 +42,8 @@ export async function signupAuth(username: string, password: string): Promise<st
         ;
         
     `);
-    console.log("reak", 5)
 
     await db.unset("account")
-    console.log("reak", 6)
+
     return "success"
 }
