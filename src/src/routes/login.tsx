@@ -35,6 +35,7 @@ export default function signup() {
 
   const [username, setUsername] = createSignal("")
   const [password, setPassword] = createSignal("")
+  const [error, setError] = createSignal(false)
 
   const [invalidCredentialAnimation] = createAutoAnimate({ duration: 700 })
 
@@ -44,10 +45,9 @@ export default function signup() {
     let verification: boolean[] = verifyCredentails(username(), password())
 
     if (!(verification[0] || (username().length == 0)))
-      return //change
-
+      setError(true)
     if (!(verification[1] || (password().length == 0)))
-      return // change
+      setError(true)
 
     console.log(password())
 
@@ -57,6 +57,8 @@ export default function signup() {
 
     if (res === "success")
       navigate("/", { replace: true });
+    else
+      setError(true)
     
   }
 
@@ -82,8 +84,8 @@ export default function signup() {
             </TextFieldRoot>
 
             <div ref={invalidCredentialAnimation} class="text-red-800 text-xs">
-              <Show when={true} keyed >
-                Username is taken
+              <Show when={error()} keyed >
+                Invalid credentials
               </Show>
             </div>
 
