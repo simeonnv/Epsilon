@@ -1,4 +1,4 @@
-
+"use server"
 import { verifyCredentails } from "./verifyCredentials";
 import { RecordId } from "surrealdb";
 import { getDb, initDb } from "../DB/DBConnect";
@@ -38,6 +38,7 @@ export async function signupAuth(username: string, password: string): Promise<st
         CREATE account SET
             username = $account.username,
             password = $account.password,
+            role = "user",
             profilePicture = {}
         ;
         

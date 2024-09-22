@@ -49,10 +49,14 @@ export default function signup() {
     if (!(verification[1] || (password().length == 0)))
       return // change
 
-    const res = await loginAuth(username(), password())
-    console.log(res)
+    console.log(password())
 
-    return
+    const res = await loginAuth(username(), password())
+
+    console.log(res, "finnal")
+
+    if (res === "success")
+      navigate("/", { replace: true });
     
   }
 

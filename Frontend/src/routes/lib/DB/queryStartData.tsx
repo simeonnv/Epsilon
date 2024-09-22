@@ -2,22 +2,24 @@ import { Surreal } from "surrealdb";
 
 export default async function queryStartData(db: Surreal): Promise<boolean> {
 
-    const res = await db.query(`
+    try {
+        const res = await db.query(`
         
         CREATE account:admin SET
             username = "admin",
             password = "admin",
+            role = "admin",
             profilePicture = {}
         ;
         
-    `)
-    
-    console.log(res)
+        `)
 
-    await db.unset("account")
-
-    if (res)
-        return true
-    else 
+        if (res)
+            return true
+        else 
+            return false
+    } catch{
         return false
+    }
+    
 }
