@@ -72,6 +72,20 @@ module.exports = {
         "caret-blink": {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" }
+        },
+        'shake': {
+          '10%, 90%': {
+            transform: 'translate3d(-1px, 0, 0)'
+          },
+          '20%, 80%': {
+            transform: 'translate3d(2px, 0, 0)'
+          },
+          '30%, 50%, 70%': {
+            transform: 'translate3d(-4px, 0, 0)'
+          },
+          '40%, 60%': {
+            transform: 'translate3d(4px, 0, 0)'
+          }
         }
       },
       animation: {
@@ -79,7 +93,8 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "collapsible-down": "collapsible-down 0.2s ease-out",
         "collapsible-up": "collapsible-up 0.2s ease-out",
-        "caret-blink": "caret-blink 1.25s ease-out infinite"
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
+        'shake': 'shake 0.82s cubic-bezier(.36,.07,.19,.97) both'
       },
     },
   },

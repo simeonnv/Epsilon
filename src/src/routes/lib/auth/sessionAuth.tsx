@@ -5,20 +5,15 @@ import * as crypto from "node:crypto";
 import { account } from "../types/account";
 import { initDb } from "../DB/DBConnect";
 import { useSession } from "vinxi/http";
+import { tokens } from "../types/tokens";
+import { hasToken } from "../types/hasToken";
 
 
 
 export type UserSession = {
-    userId?: string;
+    key?: string,
+    name?: string
 };
-
-
-
-type SessionData = {
-    userId?: string,
-    role: string
-}
-
 
 export async function getSession() {
     try {
@@ -47,7 +42,8 @@ export async function getSession() {
 // }
 
 
-async function storeToken(userId: string): Promise<string> {
+
+async function storeTokenDB(userId: string): Promise<UserSession | "something went wrong"> {
     const db = await initDb();
     if (!db) {
         console.error("DB initialization failed in storeToken");
@@ -56,7 +52,7 @@ async function storeToken(userId: string): Promise<string> {
 
     try {
         const Token = await crypto.randomBytes(120).toString('hex');
-        const res = await db.query<[any]>(`
+        const res = await db.query<[hasToken[]]>(`
             LET $tokenRes = (CREATE tokens SET
                 createdAt = time::now(),
                 role = "user",
@@ -66,7 +62,13 @@ async function storeToken(userId: string): Promise<string> {
         `, { Token, userId: new StringRecordId(userId) });
 
         console.log("Token creation and relationship success", res[0]);
-        return Token;
+
+        const userSession: UserSession = {
+            key: Token,
+            name: userId
+        }
+
+        return userSession;
     } catch (error) {
         console.error("Error during token creation or relationship", error);
         return "something went wrong";
@@ -79,7 +81,7 @@ export async function createToken(userId: string) {
         console.log("bluej", "1")
         const session = await getSession();
         
-        const res = await storeToken(userId)
+        const res = await storeTokenDB(userId)
         console.log(res, "muhehe")
         
         if (res === "something went wrong")
@@ -87,7 +89,10 @@ export async function createToken(userId: string) {
             console.error("blehh session")
             return "error"
         }
-        await session.update((d: UserSession) => (d.userId = res));
+
+        await session.update((d: UserSession) => (d.key = res.key));
+        await session.update((d: UserSession) => (d.name = res.name));
+        
         return "success"
     } catch (err)
     {
