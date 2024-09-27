@@ -91,6 +91,7 @@ export default function Sidebar(props: any) {
                         <TooltipContent>3D view</TooltipContent>
                     </Tooltip>
                 </nav>
+
                 <nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
                     <Tooltip>
                         <TooltipTrigger>
