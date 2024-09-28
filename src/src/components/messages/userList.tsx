@@ -6,11 +6,11 @@ export default function userList(props: any) {
     const toggleSidebar = () => props.setIsOpen(!props.isOpen());
   
     return (
-      <div class={`dark p-0 m-0 border-0 `}>
+      <div class={`dark p-0 m-0 border-0  transition-all duration-300 ease-in-out transform ${
+            props.isOpen() ? 'translate-x-0 w-full' : 'translate-x-full invisible w-0'
+      }`}>
         <aside
-          class={`p-0 top-0 right-0 border-l rounded-l-lg text-white h-screen w-64 bg-background transition-all duration-300 ease-in-out transform ${
-            props.isOpen() ? 'translate-x-0' : 'translate-x-96 invisible w-0'
-          }`}
+          class={`p-0 top-0 right-0 border-l rounded-l-lg text-white h-screen w-64 bg-background transition-all duration-300 ease-in-out transform`}
         >
           {/* Sidebar content wrapper */}
           <div class="flex flex-col h-full">
@@ -65,19 +65,7 @@ export default function userList(props: any) {
   
           </div>
         </aside>
-  
-        {/* Toggle button */}
-        <Button
-          onClick={toggleSidebar}
-          class={`fixed top-4 transition-all duration-300 ease-in-out ${
-            props.isOpen() ? 'right-64' : 'right-4'
-          }`}
-          variant="outline"
-          size="icon"
-        >
-          {props.isOpen() ? <p class="h-4 w-4">BLEHH</p> : <p class="h-4 w-4" />}
-          pluh
-        </Button>
+
       </div>
     );
   }

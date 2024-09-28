@@ -25,7 +25,7 @@ export default function Messages(props: any)
 
             <Channels/>
             
-            <Chat/>
+            <Chat  isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <UserList isOpen={isOpen} setIsOpen={setIsOpen}/>
             
