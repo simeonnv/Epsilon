@@ -9,12 +9,13 @@ import { ImageRoot, Image, ImageFallback } from "../ui/image"
 export default function Channels(props: any) {
     return (
         <aside class="w-60 flex flex-col h-screen border-r bg-background rounded-br-3xl">
-            {/* Scrollable content */}
+            
             <div class="flex flex-col h-full">
-                <nav class="flex flex-col flex-grow px-2 py-5 overflow-y-auto" style={{ direction: "rtl" }}>
-                    {/* Scrollable channel list */}
+                <nav class="flex flex-col flex-grow px-2 py-5 overflow-y-auto hover:hoverScroll" style={{ direction: "rtl" }}>
+                    
                     <div class="px-2 text-left text-white" style={{ direction: "ltr" }}>
-                        {/* Text Channels */}
+                        
+                        
                         <div class="pb-5">
                             <h3 class="pb-1 text-xs uppercase font-semibold text-primary">Text Channels</h3>
                             <div class="flex items-center py-2 rounded hover:bg-secondary group">
@@ -41,17 +42,19 @@ export default function Channels(props: any) {
 
                         {/* Voice Channels */}
                         <div class="pb-5">
-                            {[...Array(1)].map((_, i) => (
+                            
                                 <div>
                                     <h3 class="pb-1 text-xs uppercase font-semibold text-primary">Voice Channels</h3>
-                                    <div class="flex items-center py-2 rounded hover:bg-secondary group">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed">
-                                            <path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z"/>
-                                        </svg>
-                                        <p>general - {i + 1}</p>
-                                    </div>
+                                    {[...Array(20)].map((_, i) => (
+                                        <div class="flex items-center py-2 rounded hover:bg-secondary group">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed">
+                                                <path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z"/>
+                                            </svg>
+                                            <p>general - {i + 1}</p>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            
                         </div>
                     </div>
                 </nav>

@@ -1,18 +1,20 @@
 import { Button } from "../ui/button"
-
+import { TextField, TextFieldRoot } from "../ui/textfield";
+import { TextArea } from "../ui/textarea";
+import { ToggleButton } from "../ui/toggle";
 export default function Chat(props: any)
 {
 
     const toggleSidebar = () => props.setIsOpen(!props.isOpen());
 
     return(
-        <div class="transition-all duration-300 ease-in-out max-h-screen justify-start grid-flow-row grow">
+        <div class="transition-all duration-300 ease-in-out h-screen max-h-screen justify-between flex flex-col">
                 
 
                 <div class="py-3 flex px-4 justify-between w-full text-primary text-md font-bold border-b-2 rounded-b-lg ">
                     <div class="flex flex-row justify-start align-middle">
                         <div class="flex items-center py-2 rounded group">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed"><path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z" /></svg>                           
+                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-primary" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed"><path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z" /></svg>                           
                             <p class="px-1">announcements</p>
                         </div>
                     </div>
@@ -27,10 +29,10 @@ export default function Chat(props: any)
                     
                 </div>
 
-                <div class="text-white">
+                <div class="text-white flex-grow justify-center align-middle">
                     
-                    <h1 class="text-2xl font-bold bg-primary">Dynamic Text</h1>
-                    <p class="bg-primary flex justify-center align-middle flex-col">
+                    <h1 class="text-2xl font-bold">Dynamic Text</h1>
+                    <p class=" flex justify-center align-middle flex-col">
                         bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh 
                         bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh 
                         bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh 
@@ -38,6 +40,19 @@ export default function Chat(props: any)
                         <img class="h-64 w-64" src="/alien.png"></img>
                     </p>
                     
+                </div>
+
+
+                <div class=" w-full py-1 max-h-60 justify-end align-end">
+                    <div class="overflow-y-auto overflow-x-hidden">
+                        <TextFieldRoot class="text-white w-full resize-none">
+                            <TextArea 
+                                autoResize  
+                                class="resize-none max-h-40 overflow-y-auto hoverScroll"  // Added max-height and overflow
+                                placeholder="Type your message here."
+                            />
+                        </TextFieldRoot>
+                    </div>
                 </div>
         </div>
     )

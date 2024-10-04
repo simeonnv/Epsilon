@@ -6,11 +6,11 @@ export default function userList(props: any) {
     const toggleSidebar = () => props.setIsOpen(!props.isOpen());
   
     return (
-      <div class={`dark p-0 m-0 border-0  transition-all duration-300 ease-in-out transform ${
-            props.isOpen() ? 'translate-x-0 w-full' : 'translate-x-full invisible w-0'
+      <div class={`dark p-0 m-0 border-0  transition-all duration-500 delay-0 ease-in-out transform ${
+            props.isOpen() ? 'w-full' : 'w-0'
       }`}>
         <aside
-          class={`p-0 top-0 right-0 border-l rounded-l-lg text-white h-screen w-64 bg-background transition-all duration-300 ease-in-out transform`}
+          class={`p-0 top-0 right-0 border-l rounded-l-lg text-white h-screen w-64 bg-background `}
         >
           {/* Sidebar content wrapper */}
           <div class="flex flex-col h-full">
@@ -42,7 +42,7 @@ export default function userList(props: any) {
             </div>
   
             {/* Scrollable image list area */}
-            <div class="flex-1 overflow-y-auto overflow-x-hidden bg-background">
+            <div class="flex-1 overflow-y-auto overflow-x-hidden hover:hoverScroll bg-background">
               <div class="ml-5">
 
                 <p class="pb-2 pt-2 text-gray-500 text-sm">online - 14</p>

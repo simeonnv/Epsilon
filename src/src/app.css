@@ -68,19 +68,25 @@
   }
 
   *::-webkit-scrollbar-track {
+    
     border-radius: 100vh;
-    background: hsl(var(--secondary));
+    background: rgb(20, 20, 20);
   }
 
   *::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary));
+    
     border-radius: 100vh;
-    border: 2px solid hsl(var(--secondary));
+    border: 2px solid rgb(20, 20, 20);
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: #c0a0b9;
+    background: hsl(var(--primary));
   }
+
+  .hoverScroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+  }
+
 }
 
 

@@ -21,7 +21,7 @@ export default function Messages(props: any)
 
     return (
 
-        <div class="flex gap-0 auto-cols-max">
+        <div class="flex gap-0 auto-cols-max max-h-screen h-screen">
 
             <Channels/>
             
