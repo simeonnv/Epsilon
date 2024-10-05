@@ -65,9 +65,6 @@ export default async function loginAuth(username: string, password: string,): Pr
     
     const userId: RecordId= res[0][0].id;
 
-    //! whoever made seroval kys and hoever decided to use it with solid ill eat your ass
-    //! how do you fuck up a lib so bad that you somehow disable to whole fucking javascript debuger wtf
-    //! a day went bc of this shit
     const status = await createToken(userId.toString())
     
     if (status === "success")

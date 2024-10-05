@@ -26,6 +26,7 @@ import { onMount, createSignal, createEffect, Show } from "solid-js";
 import { signupAuth } from "./lib/auth/signupAuth"
 import { verifyCredentails } from "./lib/auth/verifyCredentials";
 import { useNavigate} from "@solidjs/router";
+import { authToken } from "./lib/auth/sessionAuth";
 
 export default function signup() {
 
@@ -38,6 +39,19 @@ export default function signup() {
   const [usernameValidation, setUsernameValidation] = createSignal(true)
   const [passwordValidation, setPasswordValidation] = createSignal(true)
   const [repeatPasswordValidation, setRepeatPasswordValidation] = createSignal(true)
+
+  const [loading, setLoading] = createSignal(true);
+
+
+  onMount(async () => {
+    // Wait for the auth token before doing anything else
+    const res = await authToken();
+
+    if (res === true) {
+      navigate("/", { replace: true });
+    } 
+  });
+
 
 
   createEffect(() => {

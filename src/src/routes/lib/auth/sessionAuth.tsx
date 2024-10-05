@@ -20,26 +20,38 @@ export async function getSession() {
         const session = await useSession({
             password: "f;xRhcmFlYc8,(fv-IaW;jWdaEd.D.a/De1D===D==1@-0$*XRQEeV35QO.j1IX0yD}MRZay_yv)"
         });
-        console.log("Session retrieved:", session); // Add this log
+        console.log("Session retrieved:", session);
         return session;
     } catch (error) {
-        console.error("Error retrieving session:", error); // Add this error handling
-        throw error; // Make sure to rethrow or handle it properly
+        console.error("Error retrieving session:", error);
+        throw error;
     }
 }
 
 
-// export async function authToken() {
-//     const session = await getSession();
-//     console.log(session.data, "zaza")
-//     if (session.data.userId)
-//         return
-//     else
-//     {
-//         await session.update((d: SessionData) => (d.userId = undefined));
-//         throw redirect("/login");
-//     }   
-// }
+export async function authToken() {
+    const session = await getSession();
+    
+    if (session.data.key && session.data.name) {
+        return true;
+    }
+
+    console.log(session.data.key);
+    console.log(session.data.name);
+
+    // If session is invalid, update and redirect
+    await session.update((d: UserSession) => {
+        d.key = undefined;
+        d.name = undefined;
+    });
+    await session.clear();
+
+    return false;
+    
+}
+
+
+
 
 
 

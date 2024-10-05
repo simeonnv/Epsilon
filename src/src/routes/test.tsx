@@ -1,30 +1,22 @@
-import { createSignal, For, Show } from 'solid-js'
-import { createAutoAnimate } from '@formkit/auto-animate/solid'
 
-const test = function () {
-  const [parent, setEnabled] = createAutoAnimate(/* optional config */)
 
-  const menuItems = ["Home", "Settings", "Logout"]
-  const [isExpanded, setIsExpanded] = createSignal(true)
+import { createSignal } from "solid-js";
+import { TextField, TextFieldRoot } from "@/components/ui/textfield";
 
-  return <div ref={parent}>
-    <Show when={isExpanded()} keyed>
-      <ul class="drawer">
-        <For each={menuItems}>
-          {item => <li class="item">{item}</li>}
-        </For>
-      </ul>
-    </Show>
-    <div class="content">
-      <button
-        class="button button--alt"
-        type="button"
-        onClick={() => setIsExpanded(isExpanded => !isExpanded)}
-      >
-        Toggle Drawer
-      </button>
-    </div>
-  </div>
+
+export default function ControlledExample() {
+	const [value, setValue] = createSignal("Apple");
+	return (
+		<>
+			{/* <TextField value={value()} onChange={setValue}>
+				<TextField.Label>Favorite fruit</TextField.Label>
+				<TextField.Input />
+			</TextField> */}
+
+      <TextFieldRoot value={value()} onChange={setValue}>
+        <TextField type="email" placeholder="Email" />
+      </TextFieldRoot>
+			<p>Your favorite fruit is: {value()}.</p>
+		</>
+	);
 }
-
-export default test

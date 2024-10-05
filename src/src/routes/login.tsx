@@ -28,6 +28,7 @@ import { verifyCredentails } from "./lib/auth/verifyCredentials";
 
 import { useNavigate } from "@solidjs/router";
 import loginAuth from "./lib/auth/loginAuth";
+import { authToken } from "./lib/auth/sessionAuth";
 
 export default function signup() {
 
@@ -37,7 +38,19 @@ export default function signup() {
   const [password, setPassword] = createSignal("")
   const [error, setError] = createSignal(false)
 
+  const [loading, setLoading] = createSignal(true);
+
+
   const [invalidCredentialAnimation] = createAutoAnimate({ duration: 700 })
+
+  onMount(async () => {
+    // Wait for the auth token before doing anything else
+    const res = await authToken();
+
+    if (res === true) {
+      navigate("/", { replace: true });
+    }
+  });
 
   async function reqLogin()
   {
