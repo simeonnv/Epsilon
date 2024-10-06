@@ -1,6 +1,9 @@
 import { Surreal } from "surrealdb";
 
+
+
 export default async function queryStartData(db: Surreal): Promise<boolean> {
+
 
     try {
         const res = await db.query(`
@@ -11,7 +14,7 @@ export default async function queryStartData(db: Surreal): Promise<boolean> {
             role = "admin",
             profilePicture = {}
         ;
-        
+
         `)
 
         if (res)

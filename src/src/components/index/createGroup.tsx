@@ -14,7 +14,7 @@ import {
 	TextFieldLabel,
 	TextFieldRoot,
 } from "@/components/ui/textfield";
-import { createSignal, onMount } from "solid-js";
+import { createEffect, createSignal, onMount } from "solid-js";
 import getUsername from "~/routes/lib/auth/getUsername";
 import ImageUpload from "../ui/imageUpload";
 
@@ -22,7 +22,7 @@ export default function CreateGroup() {
     const [username, setUsername] = createSignal("");
     const [name, setName] = createSignal("");
     const [description, setDescription] = createSignal("... silly car :3 ...");
-    const [icon, setIcon] = createSignal<File | null>(null); // Signal to store the image
+    const [icon, setIcon] = createSignal<File | null>(null);
 
     onMount(async () => {
         const resName = await getUsername();
@@ -31,6 +31,16 @@ export default function CreateGroup() {
             setName(username() + "'s Server");
     });
 
+    createEffect(async () => {
+        console.log("I ", name())
+        console.log("II ", description())
+        console.log("III ", icon())
+
+        console.log("icon", await icon()?.arrayBuffer())
+
+        let base64 = "";
+        
+    })
 
     return (
         <Dialog>

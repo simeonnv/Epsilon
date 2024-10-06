@@ -12,7 +12,7 @@ export default function ImageUpload(props: any)
 
     return (
         <div class="flex flex-col items-center">
-            <label class="w-32 h-32 rounded-full border-2 border-dashed border-primary flex items-center justify-center cursor-pointer">
+            <label class={`w-32 h-32 rounded-full ${!props.icon() ? "border-2 border-dashed border-primary" : ""} flex items-center justify-center cursor-pointer`}>
                 {props.icon() ? (
                     <img
                         src={URL.createObjectURL(props.icon()!)}

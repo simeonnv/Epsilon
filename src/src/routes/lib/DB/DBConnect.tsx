@@ -22,6 +22,8 @@ export async function initDb(): Promise<Surreal | undefined> {
             },
         });
 
+        console.log("db", db)
+
         try{
             initTables(db)
             queryStartData(db)
