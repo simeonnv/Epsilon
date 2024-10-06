@@ -31,10 +31,11 @@ export default function Index() {
     const [ui, setUi] = createSignal(1);
     const [searchQuery, setSearchQuery] = createSignal("");  // Create signal for search query
 
-    const groups: groupData[] | undefined[] = [
-        // { name: "WOG INTERNATIONAL", description: "silly geese bleh bleh bleh bleh" },
-        // { name: "Techies United", description: "Coding and Tech Talk" },
-        // { name: "Gaming Hub", description: "All about games!" },
+    let groups: groupData[] | undefined =
+    [
+        { name: "WOG INTERNATIONAL", description: "silly geese bleh bleh bleh bleh" },
+        { name: "Techies United", description: "Coding and Tech Talk" },
+        { name: "Gaming Hub", description: "All about games!" },
     ];
 
     const filteredGroups = () => {
@@ -53,7 +54,7 @@ export default function Index() {
             <div class="flex flex-row align-middle items-center min-h-screen w-full bg-background justify-center">
                 <div class="flex flex-col align-middle items-center overflow-y-auto hover:hoverScroll">
                     <div class="hoverScroll gap-12 flex flex-col p-20">
-                        <Show when={groups != undefined && !groups} fallback={<div class="text-primary font-bold text-xl">You havent joined any groups yet</div>} keyed>
+                        <Show when={groups != undefined} fallback={<div class="text-primary font-bold text-xl">You havent joined any groups yet</div>} keyed>
                             <div class="w-full flex justify-center mb-4">
                                 <TextFieldRoot class="text-foreground" value={searchQuery()} onChange={setSearchQuery}>
                                     <TextField placeholder="search for group" />

@@ -12,7 +12,8 @@ import { hasToken } from "../types/hasToken";
 
 export type UserSession = {
     key?: string,
-    name?: string
+    id?: string,
+    username?: string
 };
 
 export async function getSession() {
@@ -31,18 +32,24 @@ export async function getSession() {
 
 export async function authToken() {
     const session = await getSession();
+
+    console.log("before ", session.data.key);
+    console.log("before ",session.data.id);
+    console.log("before ",session.data.username);
     
-    if (session.data.key && session.data.name) {
+    if (session.data.key && session.data.id && session.data.username) {
         return true;
     }
 
-    console.log(session.data.key);
-    console.log(session.data.name);
+    console.log("after ", session.data.key);
+    console.log("after ", session.data.id);
+    console.log("after ", session.data.username);
 
     // If session is invalid, update and redirect
     await session.update((d: UserSession) => {
         d.key = undefined;
-        d.name = undefined;
+        d.id = undefined;
+        d.username = undefined;
     });
     await session.clear();
 
@@ -64,20 +71,35 @@ async function storeTokenDB(userId: string): Promise<UserSession | "something we
 
     try {
         const Token = await crypto.randomBytes(120).toString('hex');
-        const res = await db.query<[hasToken[]]>(`
+        
+        type username = {
+            username: string
+        }
+
+        const res = await db.query<[undefined[], hasToken[], username[]]>(`
+            
             LET $tokenRes = (CREATE tokens SET
                 createdAt = time::now(),
                 role = "user",
                 token = $Token
             );
+            
             RELATE $userId->hasToken->$tokenRes SET createdAt = time::now();
+            
+            SELECT username FROM $userId;
+
         `, { Token, userId: new StringRecordId(userId) });
 
         console.log("Token creation and relationship success", res[0]);
+        console.log("I ", res[0]);
+        console.log("II ", res[1]);
+        console.log("III ", res[2]);
+
 
         const userSession: UserSession = {
             key: Token,
-            name: userId
+            id: userId,
+            username: res[2][0].username
         }
 
         return userSession;
@@ -102,8 +124,11 @@ export async function createToken(userId: string) {
             return "error"
         }
 
-        await session.update((d: UserSession) => (d.key = res.key));
-        await session.update((d: UserSession) => (d.name = res.name));
+        await session.update((d: UserSession) => {
+            d.key = res.key;
+            d.id = res.id; 
+            d.username = res.username
+        });
         
         return "success"
     } catch (err)
