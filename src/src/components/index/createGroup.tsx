@@ -13,16 +13,28 @@ import {
 	TextField,
 	TextFieldLabel,
 	TextFieldRoot,
+    TextFieldErrorMessage,
 } from "@/components/ui/textfield";
 import { createEffect, createSignal, onMount } from "solid-js";
 import getUsername from "~/routes/lib/auth/getUsername";
 import ImageUpload from "../ui/imageUpload";
+import createGroup from "~/routes/lib/group/CreateGroup";
 
 export default function CreateGroup() {
-    const [username, setUsername] = createSignal("");
-    const [name, setName] = createSignal("");
-    const [description, setDescription] = createSignal("... silly car :3 ...");
+    const [username, setUsername] = createSignal<string>("");
+    const [name, setName] = createSignal<string>("");
+    const [description, setDescription] = createSignal<string>("... silly car :3 ...");
     const [icon, setIcon] = createSignal<File | null>(null);
+    const [validName, setValidName] = createSignal<boolean>(true);
+
+    const create = async () => {
+        if (validName() === false)
+            return;
+        const res = await createGroup(name(), description(), icon())
+        console.log(res)
+
+
+    }
 
     onMount(async () => {
         const resName = await getUsername();
@@ -38,8 +50,12 @@ export default function CreateGroup() {
 
         console.log("icon", await icon()?.arrayBuffer())
 
-        let base64 = "";
-        
+        console.log("val", await validName())
+
+        if (!(name().length >= 1 && name().length <= 25))
+            setValidName(false);
+        else
+            setValidName(true);
     })
 
     return (
@@ -65,12 +81,13 @@ export default function CreateGroup() {
 
                     <ImageUpload icon={icon} setIcon={setIcon}/>
 
-                    <TextFieldRoot value={name()} onChange={setName} name="name" defaultValue={username() + "'s Server"}>
-                        <TextFieldLabel class="text-primary">Server Name</TextFieldLabel>
+                    <TextFieldRoot value={name()} onChange={setName} name="name" defaultValue={username() + "'s Server" } validationState={validName() ? "valid" : "invalid"}>
+                        <TextFieldLabel class="!text-primary">Server Name</TextFieldLabel>
                         <TextField class="text-foreground"/>
+                        <TextFieldErrorMessage>Incorrect name length</TextFieldErrorMessage>
                     </TextFieldRoot>
 
-                    <TextFieldRoot value={description()} onChange={setDescription} name="description" defaultValue="... silly car :3 ...">
+                    <TextFieldRoot value={description()} onChange={setDescription} name="description" defaultValue="... silly car :3 ..." >
                         <TextFieldLabel class="text-primary">Server Description</TextFieldLabel>
                         <TextField class="text-foreground"/>
                     </TextFieldRoot>
@@ -78,7 +95,7 @@ export default function CreateGroup() {
                 </div>
 
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <Button onClick={create} type="submit">Save changes</Button>
                 </DialogFooter>
 
             </DialogContent>

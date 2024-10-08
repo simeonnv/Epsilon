@@ -8,7 +8,7 @@ import { useSession } from "vinxi/http";
 import { tokens } from "../types/tokens";
 import { hasToken } from "../types/hasToken";
 
-
+const SECRET = "f;xRhcmFlYc8,(fv-IaW;jWdaEd.D.a/De1D===D==1@-0$*XRQEeV35QO.j1IX0yD}MRZay_yv)";
 
 export type UserSession = {
     key?: string,
@@ -19,10 +19,30 @@ export type UserSession = {
 export async function getSession() {
     try {
         const session = await useSession({
-            password: "f;xRhcmFlYc8,(fv-IaW;jWdaEd.D.a/De1D===D==1@-0$*XRQEeV35QO.j1IX0yD}MRZay_yv)"
+            password: SECRET
         });
         console.log("Session retrieved:", session);
         return session;
+    } catch (error) {
+        console.error("Error retrieving session:", error);
+        throw error;
+    }
+}
+
+export async function getSessionJson() {
+    try {
+        const session = await useSession({
+            password: SECRET
+        });
+        console.log("Session retrieved:", session);
+
+        const userSession: UserSession = {
+            key: await session.data.key,
+            id: await session.data.id,
+            username: await session.data.username
+        }
+
+        return userSession;
     } catch (error) {
         console.error("Error retrieving session:", error);
         throw error;
