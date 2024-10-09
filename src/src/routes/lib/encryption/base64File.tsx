@@ -24,7 +24,10 @@ export async function fileToBase64File(file: File): Promise<base64File> {
     return base64File
 }
 
-function base64ToFile(base64: string, filename: string, mimeType: string ): File {
+export function base64ToFile(base64: string, filename: string, mimeType: string ): File {
+
+  console.log(base64)
+  console.log(typeof(base64))
 
     const byteString = atob(base64);
     const ab = new ArrayBuffer(byteString.length);

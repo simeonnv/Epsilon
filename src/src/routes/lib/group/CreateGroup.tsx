@@ -17,20 +17,30 @@ export default async function CreateGroup(name: string, description: string, ico
     if (!db)
         return "error" 
 
+    const session = await getSessionJson();
+
+    if (session.username === undefined || session.key === undefined || session.id === undefined)
+            return "error"
+
 
 
     if (icon === null && !isImage(icon))
     {
-        await db.query(`
+        const res = await db.query(`
             
-            CREATE groups SET 
-                name = $name,
-                description = $description,
-                createdAt = time::now(),
-                icon = NONE
-            ;
+            LET $groupRes = (
+                    CREATE groups SET 
+                    name = $name,
+                    description = $description,
+                    createdAt = time::now(),
+                    icon = NONE
+            );
 
-        `, {name, description})
+            RELATE $groupRes->hasMembers->$userId SET joinDate = time::now();
+
+        `, {name, description, userId: new StringRecordId(session.id)})
+
+        console.log("no icon bayb: ", res)
     }
     else
     {
@@ -39,18 +49,6 @@ export default async function CreateGroup(name: string, description: string, ico
         
 
         const iconBase64: base64File = await fileToBase64File(icon);
-
-        const session = await getSessionJson();
-
-        console.log("id ", await session.id)
-        console.log("key ", await session.key)
-        console.log("username ", await session.username)
-
-        if (session.username === undefined || session.key === undefined || session.id === undefined)
-            return "error"
-
-        console.log("json ", session)
-
 
         console.log(typeof(iconBase64.base64))
 

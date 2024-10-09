@@ -20,12 +20,18 @@ import getUsername from "~/routes/lib/auth/getUsername";
 import ImageUpload from "../ui/imageUpload";
 import createGroup from "~/routes/lib/group/CreateGroup";
 
-export default function CreateGroup() {
+export default function CreateGroup({ getGroups }: { getGroups: () => Promise<void> }) {
+
+    let defaultName: string = "something may be wrong lol";
+    const defaultDescription: string = "... silly car :3 ...";
+
+
     const [username, setUsername] = createSignal<string>("");
-    const [name, setName] = createSignal<string>("");
-    const [description, setDescription] = createSignal<string>("... silly car :3 ...");
+    const [name, setName] = createSignal<string>(defaultName);
+    const [description, setDescription] = createSignal<string>(defaultDescription);
     const [icon, setIcon] = createSignal<File | null>(null);
     const [validName, setValidName] = createSignal<boolean>(true);
+    const [isOpened, setIsOpened] = createSignal<boolean>(false);
 
     const create = async () => {
         if (validName() === false)
@@ -33,14 +39,25 @@ export default function CreateGroup() {
         const res = await createGroup(name(), description(), icon())
         console.log(res)
 
+        setIsOpened(false)
+        setDescription(defaultDescription)
+        setName(defaultName)
+        setIcon(null)
+
+        await getGroups()
 
     }
 
     onMount(async () => {
         const resName = await getUsername();
         setUsername(resName);
-        if (name() === "")
+
+        if (name() === defaultName)
+        {
             setName(username() + "'s Server");
+            defaultName = username() + "'s Server"
+        }
+            
     });
 
     createEffect(async () => {
@@ -52,14 +69,14 @@ export default function CreateGroup() {
 
         console.log("val", await validName())
 
-        if (!(name().length >= 1 && name().length <= 25))
+        if (!(name().length >= 1 && name().length <= 20))
             setValidName(false);
         else
             setValidName(true);
     })
 
     return (
-        <Dialog>
+        <Dialog open={isOpened()} onOpenChange={(open) => {setIsOpened(!isOpened())}}>
             <DialogTrigger
                 as={(props: DialogTriggerProps) => (
                     <Button {...props}>
