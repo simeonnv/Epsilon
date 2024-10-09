@@ -34,6 +34,7 @@ export default async function initTables(db: Surreal): Promise<boolean> {
 
         DEFINE TABLE IF NOT EXISTS hasMembers SCHEMAFULL TYPE RELATION IN groups OUT account;
         DEFINE FIELD IF NOT EXISTS joinDate ON TABLE hasMembers TYPE datetime READONLY;
+        DEFINE FIELD IF NOT EXISTS role ON TABLE hasMembers TYPE string DEFAULT "user";
 
         
 

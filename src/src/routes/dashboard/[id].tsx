@@ -9,9 +9,11 @@ import { TextArea } from "~/components/ui/textarea";
 import { createSignal } from "solid-js";
 import Messages from "~/components/messages/messages";
 import Group from "~/components/group";
+import { useParams } from "@solidjs/router";
 import { Show } from "solid-js";
 
 export default function Dashboard() {
+  const params = useParams();
   const [ui, setUi] = createSignal(1);
 
   

@@ -12,6 +12,7 @@ import CreateGroup from "~/components/index/createGroup";
 import GetGroups from "./lib/group/GetGroups";
 import { base64ToFile } from "./lib/encryption/base64File";
 import { StringRecordId } from "surrealdb";
+import DeleteGroup from "~/components/index/deleteGroup";
 
 // URL.createObjectURL(props.icon()!)
 
@@ -49,6 +50,10 @@ export default function Index() {
         setGroups(res)
     }
 
+    const enterGroup = (id: string) => {
+        navigate(`/dashboard/${id}`, { replace: true });
+    }
+
     const filteredGroups = () => {
         console.log(searchQuery())
 
@@ -76,7 +81,7 @@ export default function Index() {
                                 
                                     {filteredGroups()?.map(group => (
                                         <div id={group.id.id.toString()} class="flex align-middle p-10 border transition ease-in-out delay-150 rounded-l-[40px] items-center justify-center gap-5">
-                                            <ImageRoot class="h-16 w-16">
+                                            <ImageRoot class="h-20 w-20">
                                                 <Image src={group.icon == undefined || group.icon.base64 == undefined || group.icon.type == undefined ? "/public/favicon.ico" : URL.createObjectURL(base64ToFile(group.icon.base64, "default", group.icon.type))} />
                                                 <ImageFallback>HN</ImageFallback>
                                             </ImageRoot>
@@ -84,10 +89,10 @@ export default function Index() {
                                                 <h1 class="text-primary font-black text-2xl">{group?.name}</h1>
                                                 <p class="text-primary">{group?.description}</p>
                                             </div>
-                                            <Button id={group.id.id.toString()} variant="outline" class="h-16 w-16 rounded-full">
-                                                <svg class="fill-primary" xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#e8eaed"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
-                                            </Button>
-                                            <Button id={group.id.id.toString()} variant="outline" class="h-16 w-16 rounded-full">
+                                            
+                                            <DeleteGroup groupId={group.id.id.toString()} getGroups={getGroups}/>
+
+                                            <Button onClick={() => enterGroup(group.id.id.toString())} id={group.id.id.toString()} variant="outline" class="h-16 w-16 rounded-full">
                                                 <svg class="fill-primary" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
                                             </Button>
                                         </div>
@@ -100,6 +105,7 @@ export default function Index() {
                             
                             <CreateGroup getGroups={getGroups}/>
 
+                            
                             <Button>blehh</Button>
                         </div>
                     </div>

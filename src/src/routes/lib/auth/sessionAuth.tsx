@@ -29,7 +29,7 @@ export async function getSession() {
     }
 }
 
-export async function getSessionJson() {
+export async function getSessionJson(): Promise<UserSession> {
     try {
         const session = await useSession({
             password: SECRET
@@ -50,20 +50,54 @@ export async function getSessionJson() {
 }
 
 
-export async function authToken() {
-    const session = await getSession();
+export async function authToken(): Promise<boolean> {
 
-    console.log("before ", session.data.key);
-    console.log("before ",session.data.id);
-    console.log("before ",session.data.username);
+    
+    const session = await getSession();
     
     if (session.data.key && session.data.id && session.data.username) {
+
+        type tokens = {
+            token: string,
+            createdAt: Date
+        }
+
+        const db = await initDb()
+
+        if(!db)
+            return false
+
+        console.log("nz zz", session.data.key)
+
+        const res = await db.query<[tokens[] | []]>(`
+        
+            SELECT token, createdAt FROM tokens WHERE <-hasToken<-(account WHERE id == $userId) and token == $Token and (createdAt > (time::now() - 14w));
+        
+        `, {userId: new StringRecordId(session.data.id), Token: session.data.key})
+
+        console.log("nz RAAH", res)
+        
+
+        if (!res[0][0])
+        {
+            
+            await session.update((d: UserSession) => {
+                d.key = undefined;
+                d.id = undefined;
+                d.username = undefined;
+            });
+
+            await session.clear();
+
+            console.log("blehh")
+
+            return false
+        }
+        
         return true;
+        
     }
 
-    console.log("after ", session.data.key);
-    console.log("after ", session.data.id);
-    console.log("after ", session.data.username);
 
     // If session is invalid, update and redirect
     await session.update((d: UserSession) => {
