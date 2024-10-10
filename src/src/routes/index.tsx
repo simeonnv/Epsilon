@@ -1,5 +1,5 @@
 import Sidebar from "~/components/sidebar";
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onMount, Suspense } from "solid-js";
 import { ImageRoot, ImageFallback, Image } from "@/components/ui/image";
 import Messages from "~/components/messages/messages";
 import { Show } from "solid-js";
@@ -13,6 +13,8 @@ import GetGroups from "./lib/group/GetGroups";
 import { base64ToFile } from "./lib/encryption/base64File";
 import { StringRecordId } from "surrealdb";
 import DeleteGroup from "~/components/index/deleteGroup";
+import Loading from "~/components/ui/loading";
+import LoadingGroup from "~/components/ui/loadingGroup";
 
 // URL.createObjectURL(props.icon()!)
 
@@ -34,6 +36,7 @@ export default function Index() {
     });
 
     const [ui, setUi] = createSignal(1);
+    const [loading, setLoading] = createSignal<boolean>(true);
     const [searchQuery, setSearchQuery] = createSignal("");  // Create signal for search query
     const [groups, setGroups] = createSignal<groupExtended[] | undefined>(undefined);
 
@@ -45,9 +48,11 @@ export default function Index() {
     // ];
 
     const getGroups = async () => {
+        setLoading(true)
         const res = await GetGroups()
         console.log("GYAAAAAAT", res)
         setGroups(res)
+        setLoading(false)
     }
 
     const enterGroup = (id: string) => {
@@ -70,6 +75,7 @@ export default function Index() {
             <div class="flex flex-row align-middle items-center min-h-screen w-full bg-background justify-center">
                 <div class="flex flex-col align-middle items-center overflow-y-auto hover:hoverScroll">
                     <div class="hoverScroll gap-12 flex flex-col p-20">
+                        <Show when={!loading()} fallback={<LoadingGroup/>}>
                         <Show when={groups() != undefined} fallback={<div class="text-primary font-bold text-xl">You havent joined any groups yet</div>} keyed>
                             <div class="w-full flex justify-center mb-4">
                                 <TextFieldRoot class="text-foreground" value={searchQuery()} onChange={setSearchQuery}>
@@ -78,7 +84,7 @@ export default function Index() {
                             </div>
 
                             <div class="flex flex-col gap-12">
-                                
+                                <Suspense fallback={<Loading/>}>
                                     {filteredGroups()?.map(group => (
                                         <div id={group.id.id.toString()} class="flex align-middle p-10 border transition ease-in-out delay-150 rounded-l-[40px] items-center justify-center gap-5">
                                             <ImageRoot class="h-20 w-20">
@@ -97,9 +103,10 @@ export default function Index() {
                                             </Button>
                                         </div>
                                     ))}
-                                
+                                </Suspense>
 
                             </div>
+                        </Show>
                         </Show>
                         <div class="flex gap-5 align-middle justify-center">
                             

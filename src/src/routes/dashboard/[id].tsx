@@ -7,14 +7,17 @@ import Break from "~/components/ui/Break";
 import { TextFieldRoot } from "~/components/ui/textfield";
 import { TextArea } from "~/components/ui/textarea";
 import { createSignal } from "solid-js";
-import Messages from "~/components/messages/messages";
+// import Messages from "~/components/messages/messages";
+const Messages = lazy(() => import("~/components/messages/messages"));
 import Group from "~/components/group";
 import { useParams } from "@solidjs/router";
-import { Show } from "solid-js";
+import { Show, lazy, Suspense } from "solid-js";
+import Loading from "~/components/ui/loading";
 
 export default function Dashboard() {
   const params = useParams();
   const [ui, setUi] = createSignal(1);
+  console.log(params.id)
 
   
   
@@ -28,11 +31,11 @@ export default function Dashboard() {
         </div>
 
         <Show when={ui() == 2}>
-          <div>
-            <Messages/>
-          </div>
+            <Suspense fallback={<Loading/>}>
+              <Messages/>
+            </Suspense>
         </Show>
-
+        
 
       </div>
     </main>
