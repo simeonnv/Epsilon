@@ -39,7 +39,7 @@ export default function Dashboard() {
           <Sidebar setUi={setUi} ui={ui} />
         </div>
 
-        <Show when={ui() == 2}>
+        <Show when={ui() == 3}>
             <Suspense fallback={<Loading/>}>
               <Messages groupId={params.id} group={group}/>
             </Suspense>
