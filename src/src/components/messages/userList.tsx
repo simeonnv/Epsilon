@@ -1,65 +1,99 @@
-import { createSignal } from "solid-js";
+import { Accessor, createSignal, onMount, Setter, Show } from "solid-js";
 import { Button } from "../ui/button"
 import { ImageRoot, Image, ImageFallback } from "../ui/image"
+import { accountShortened } from "~/routes/lib/types/account";
+import getMembers from "~/routes/lib/messages/getMembers";
+import { base64ToFile } from "~/routes/lib/encryption/base64File";
+import getGroup from "~/routes/lib/messages/getGroup";
+import { group } from "~/routes/lib/types/group";
 
-export default function userList(props: any) {
-    const toggleSidebar = () => props.setIsOpen(!props.isOpen());
+export default function userList({ groupId, setIsOpen, isOpen, group }: 
+  { groupId: string, 
+    setIsOpen: Setter<boolean>, 
+    isOpen: Accessor<boolean>, 
+    group: Accessor<group | undefined> 
+  }) {
+
+
+    const toggleSidebar = () => setIsOpen(!isOpen());
+
+    const [members, setMembers] = createSignal<undefined | accountShortened[]>(undefined);
+    
+    onMount(async () => {
+        console.log("NZ", await groupId)
+        const res = await getMembers(groupId)
+
+        setMembers(res)
+
+        const group = await getGroup(groupId);
+
+        if (group != undefined)
+          console.log(group)
+
+        if (res != undefined)
+            console.log(res)
+    })
+
   
     return (
       <div class={`dark p-0 m-0 border-0  transition-all duration-500 delay-0 ease-in-out transform ${
-            props.isOpen() ? 'w-full' : 'w-0'
+            isOpen() ? 'w-full' : 'w-0'
       }`}>
         <aside
           class={`p-0 top-0 right-0 border-l rounded-l-lg text-white h-screen w-64 bg-background `}
         >
-          {/* Sidebar content wrapper */}
           <div class="flex flex-col h-full">
   
-            {/* Sidebar static top content */}
             <div class="flex items-center justify-between pt-5">
               <div class="flex-1 border-t mx-6"></div>
             </div>
   
-            {/* Sidebar user statistics */}
             <div class="flex justify-center items-center">
               <div class="w-3 h-3 rounded-full bg-primary p-1"></div>
-              <div class="p-2 flex items-center text-primary">9,999</div>
+              <div class="p-2 flex items-center text-primary">{members()?.length != undefined ? members()?.length : 0}</div>
               <div class="w-3 h-3 rounded-full bg-gray-500 p-1"></div>
-              <div class="p-2 flex items-center text-gray-500">9,999</div>
+              <div class="p-2 flex items-center text-gray-500">{members()?.length != undefined ? members()?.length : 0}</div>
             </div>
   
             <div class="flex items-center justify-between">
               <div class="flex-1 border-t mx-6"></div>
             </div>
   
-            {/* Sidebar title */}
             <div class="flex justify-center align-center p-4">
-              <div class="text-xl font-semibold">WOG</div>
+              <div class="text-xl font-semibold text-primary">{group()?.name}</div>
             </div>
   
             <div class="flex items-center justify-between">
               <div class="flex-1 border-t mx-6"></div>
             </div>
   
-            {/* Scrollable image list area */}
             <div class="flex-1 overflow-y-auto overflow-x-hidden hover:hoverScroll bg-background">
               <div class="ml-5">
 
-                <p class="pb-2 pt-2 text-gray-500 text-sm">online - 14</p>
-  
-                {/* User list */}
-                {[...Array(20)].map(() => (
-                  <div class="flex flex-row pb-4">
-                    <ImageRoot>
-                      <Image src="https://avatars.githubusercontent.com/u/111970903?v=4" />
-                      <ImageFallback>HN</ImageFallback>
-                    </ImageRoot>
-                    <div class="pl-3">
-                      <p>Simeon</p>
-                      <p class="text-xs text-primary font-bold">blehh</p>
+                <p class="pb-2 pt-2 text-gray-500 text-sm">online - {members()?.length}</p>
+                
+                  {members()?.map(member => (
+
+                    <div class="flex flex-row pb-4">
+                      
+                      <ImageRoot>
+                        <Image src={member.pfp == undefined 
+                          || member.pfp.base64 == undefined 
+                          || member.pfp.type == undefined 
+                          ? "/public/favicon.ico" 
+                          : URL.createObjectURL(base64ToFile(member.pfp.base64, "default", member.pfp.type))} />
+                        <ImageFallback>HN</ImageFallback>
+                      </ImageRoot>
+                      
+                      <div class="pl-3 align-middle justify-center items-center content-center">
+                        <p>{member.username}</p>
+                        <Show when={member.status != undefined}><p class="text-xs text-primary">{member.status}</p></Show>
+                      </div>
+                    
                     </div>
-                  </div>
-                ))}
+                  
+                  ))}
+                
               </div>
             </div>
   

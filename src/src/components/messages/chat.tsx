@@ -2,10 +2,12 @@ import { Button } from "../ui/button"
 import { TextField, TextFieldRoot } from "../ui/textfield";
 import { TextArea } from "../ui/textarea";
 import { ToggleButton } from "../ui/toggle";
-export default function Chat(props: any)
+import { Setter, Accessor } from "solid-js";
+
+export default function Chat({ groupId, setIsOpen, isOpen }: { groupId: string, setIsOpen: Setter<boolean>, isOpen: Accessor<boolean> })
 {
 
-    const toggleSidebar = () => props.setIsOpen(!props.isOpen());
+    const toggleSidebar = () => setIsOpen(!isOpen());
 
     return(
         <div class="transition-all duration-300 ease-in-out h-screen max-h-screen justify-between flex flex-col">

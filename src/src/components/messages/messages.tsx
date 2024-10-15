@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { Accessor, createSignal, onMount } from "solid-js";
 import Sidebar from "../sidebar";
 import { Show } from "solid-js";
 import { Button } from "../ui/button"
@@ -7,17 +7,17 @@ import Chat from "./chat";
 import { ImageRoot, Image, ImageFallback } from "../ui/image"
 import UserList from "./userList";
 import { Transition } from "solid-transition-group";
+import getMembers from "~/routes/lib/messages/getMembers";
+import { accountShortened } from "~/routes/lib/types/account";
+import { group } from "~/routes/lib/types/group";
+import getGroup from "~/routes/lib/messages/getGroup";
 
-export default function Messages(props: any)
+export default function Messages({ groupId, group }: { groupId: string, group: Accessor<group | undefined> })
 {
 
-    
-    const toggleSidebar = () => props.setIsOpen(!props.isOpen());
     const [isOpen, setIsOpen] = createSignal(true);
     const [nz, setNz] = createSignal(true);
     const bleh = () => {setNz(!nz())}
-    const [ui, setUi] = createSignal(1);
-
 
     return (
 
@@ -25,9 +25,9 @@ export default function Messages(props: any)
 
             <Channels/>
             
-            <Chat  isOpen={isOpen} setIsOpen={setIsOpen} />
+            <Chat  isOpen={isOpen} setIsOpen={setIsOpen} groupId={groupId}/>
 
-            <UserList isOpen={isOpen} setIsOpen={setIsOpen}/>
+            <UserList isOpen={isOpen} setIsOpen={setIsOpen} groupId={groupId} group={group}/>
             
 
             

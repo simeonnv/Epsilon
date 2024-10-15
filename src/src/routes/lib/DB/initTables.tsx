@@ -3,9 +3,12 @@ import { Surreal } from "surrealdb";
 export default async function initTables(db: Surreal): Promise<boolean> {
     const res = await db.query(`
         
-        DEFINE TABLE IF NOT EXISTS account SCHEMALESS;
+        DEFINE TABLE IF NOT EXISTS account SCHEMAFULL;
         DEFINE FIELD IF NOT EXISTS username ON TABLE account TYPE string;
+        DEFINE FIELD IF NOT EXISTS status ON TABLE account TYPE option<string> DEFAULT NONE;
         DEFINE FIELD IF NOT EXISTS password ON TABLE account TYPE string;
+        DEFINE FIELD IF NOT EXISTS createdAt ON TABLE account TYPE datetime VALUE time::now() READONLY ;
+        DEFINE FIELD IF NOT EXISTS pfp ON TABLE account TYPE option<record<files>> DEFAULT NONE;
         DEFINE FIELD IF NOT EXISTS role ON TABLE account TYPE string;
 
         DEFINE TABLE IF NOT EXISTS tokens SCHEMAFULL;
@@ -22,9 +25,6 @@ export default async function initTables(db: Surreal): Promise<boolean> {
         DEFINE FIELD IF NOT EXISTS type ON TABLE files TYPE string READONLY;
         DEFINE FIELD IF NOT EXISTS size ON TABLE files TYPE number READONLY;
         DEFINE FIELD IF NOT EXISTS base64 ON TABLE files TYPE string READONLY;
-
-        DEFINE TABLE IF NOT EXISTS hasPFP SCHEMAFULL TYPE RELATION IN account OUT files;
-        DEFINE FIELD IF NOT EXISTS createdAt ON TABLE hasPFP TYPE datetime READONLY;
 
         DEFINE TABLE IF NOT EXISTS groups SCHEMAFULL;
         DEFINE FIELD IF NOT EXISTS createdAt ON TABLE groups TYPE datetime READONLY;
