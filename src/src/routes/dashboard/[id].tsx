@@ -10,12 +10,15 @@ import { createSignal, onMount } from "solid-js";
 // import Messages from "~/components/messages/messages";
 const Messages = lazy(() => import("~/components/messages/messages"));
 import Group from "~/components/group";
-import { useParams } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { Show, lazy, Suspense } from "solid-js";
 import Loading from "~/components/ui/loading";
 import getMembers from "../lib/messages/getMembers";
 import { group } from "../lib/types/group";
 import getGroup from "../lib/messages/getGroup";
+import { account, accountExtended } from "../lib/types/account";
+import getAccountInfo from "../lib/auth/getAccountInfo";
+import { authToken } from "../lib/auth/sessionAuth";
 
 export default function Dashboard() {
   const params = useParams();
@@ -23,12 +26,22 @@ export default function Dashboard() {
   console.log(params.id)
 
   const [group, setGroup] = createSignal<group | undefined>(undefined);
+  const [user, setUser] = createSignal<accountExtended | undefined>(undefined);
+  const navigate = useNavigate();
 
-    onMount(async () => {
-        const group = await getGroup(params.id)
-        setGroup(group);
 
-    })
+  onMount(async () => {
+
+    const res = await authToken();
+    if (res === false)
+      navigate("/login", { replace: true });
+
+    const group = await getGroup(params.id)
+    setGroup(group);
+    const account = await getAccountInfo();
+    setUser(account)
+
+  })
 
 
   return (
@@ -40,11 +53,11 @@ export default function Dashboard() {
         </div>
 
         <Show when={ui() == 3}>
-            <Suspense fallback={<Loading/>}>
-              <Messages groupId={params.id} group={group}/>
-            </Suspense>
+          <Suspense fallback={<Loading />}>
+            <Messages groupId={params.id} group={group}  user={user} />
+          </Suspense>
         </Show>
-        
+
 
       </div>
     </main>

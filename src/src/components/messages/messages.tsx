@@ -8,11 +8,11 @@ import { ImageRoot, Image, ImageFallback } from "../ui/image"
 import UserList from "./userList";
 import { Transition } from "solid-transition-group";
 import getMembers from "~/routes/lib/messages/getMembers";
-import { accountShortened } from "~/routes/lib/types/account";
+import { account, accountExtended, accountShortened } from "~/routes/lib/types/account";
 import { group } from "~/routes/lib/types/group";
 import getGroup from "~/routes/lib/messages/getGroup";
 
-export default function Messages({ groupId, group }: { groupId: string, group: Accessor<group | undefined> })
+export default function Messages({ groupId, group, user }: { groupId: string, group: Accessor<group | undefined>, user: Accessor<accountExtended | undefined> })
 {
 
     const [isOpen, setIsOpen] = createSignal(true);
@@ -23,7 +23,7 @@ export default function Messages({ groupId, group }: { groupId: string, group: A
 
         <div class="flex gap-0 auto-cols-max max-h-screen h-screen">
 
-            <Channels/>
+            <Channels user={user}/>
             
             <Chat  isOpen={isOpen} setIsOpen={setIsOpen} groupId={groupId}/>
 

@@ -2,11 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger, } from "~/components/ui/tooltip";
 import { Title } from "@solidjs/meta";
-import { createSignal } from "solid-js";
+import { Accessor, createSignal, onMount } from "solid-js";
 import { ImageRoot, Image, ImageFallback } from "../ui/image"
+import { account, accountExtended } from "~/routes/lib/types/account";
+import { base64ToFile } from "~/routes/lib/encryption/base64File";
 
 
-export default function Channels(props: any) {
+export default function Channels({user}: {user: Accessor<accountExtended | undefined>}) {
+
+    const [hasPFP, setHasPFP] = createSignal<boolean>(user() === undefined 
+    || user()?.pfp === undefined 
+    || user()?.pfp?.base64 === undefined 
+    || user()?.pfp?.type === undefined)
+
+
     return (
         <aside class="w-60 flex flex-col h-screen border-r bg-background rounded-br-3xl">
             
@@ -63,11 +72,18 @@ export default function Channels(props: any) {
                 <div class="flex-none border-t rounded-t-xl p-3">
                     <div class="flex items-center space-x-3">
                         <ImageRoot>
-                            <Image src="https://avatars.githubusercontent.com/u/111970903?v=4" />
+                            <Image src={
+                                user() === undefined
+                                || user()?.pfp === undefined 
+                                || user()?.pfp?.base64 === undefined 
+                                || user()?.pfp?.type === undefined 
+                                ? "/public/favicon.ico" 
+                                : URL.createObjectURL(base64ToFile(user()?.pfp?.base64, "default", user()?.pfp?.type))
+                            }/>
                             <ImageFallback>HN</ImageFallback>
                         </ImageRoot>
                         <div class="text-foreground">
-                            <p>Simeon</p>
+                            <p>{user()?.username}</p>
                             <p class="text-xs text-primary font-bold">online</p>
                         </div>
                         <div class="flex space-x-3">
