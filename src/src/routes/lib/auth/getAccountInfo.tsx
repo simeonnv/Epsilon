@@ -3,9 +3,9 @@
 import { StringRecordId } from "surrealdb";
 import { initDb } from "../DB/DBConnect";
 import { getSession, getSessionJson } from "./sessionAuth";
-import { account, accountExtended } from "../types/account";
+import { accounts, accountsExtended } from "../types/accounts";
 
-export default async function getAccountInfo(): Promise<accountExtended | undefined>
+export default async function getAccountInfo(): Promise<accountsExtended | undefined>
 {
 
     const session = await getSessionJson();
@@ -20,7 +20,7 @@ export default async function getAccountInfo(): Promise<accountExtended | undefi
     if (!db)
         return
 
-    const res = await db.query<[accountExtended[]]>(`
+    const res = await db.query<[accountsExtended[]]>(`
         
         SELECT username, status, role, createdAt, pfp.base64, pfp.type FROM $userId;
 

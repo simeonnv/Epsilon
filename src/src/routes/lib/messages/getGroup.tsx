@@ -1,6 +1,5 @@
 import { initDb } from "../DB/DBConnect";
 import { RecordId, StringRecordId } from "surrealdb";
-import { accountShortened } from "../types/account";
 import { group } from "../types/group";
 
 export default async function getGroup(id :string): Promise<group | undefined>

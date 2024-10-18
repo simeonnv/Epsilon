@@ -8,7 +8,7 @@ export default async function queryStartData(db: Surreal): Promise<boolean> {
     try {
         const res = await db.query(`
         
-            CREATE account:admin SET
+            CREATE accounts:admin SET
                 username = "admin",
                 password = "admin",
                 role = "admin",

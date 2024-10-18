@@ -3,20 +3,20 @@ import { Surreal } from "surrealdb";
 export default async function initTables(db: Surreal): Promise<boolean> {
     const res = await db.query(`
         
-        DEFINE TABLE IF NOT EXISTS account SCHEMAFULL;
-        DEFINE FIELD IF NOT EXISTS username ON TABLE account TYPE string;
-        DEFINE FIELD IF NOT EXISTS status ON TABLE account TYPE option<string> DEFAULT NONE;
-        DEFINE FIELD IF NOT EXISTS password ON TABLE account TYPE string;
-        DEFINE FIELD IF NOT EXISTS createdAt ON TABLE account TYPE datetime VALUE time::now() READONLY ;
-        DEFINE FIELD IF NOT EXISTS pfp ON TABLE account TYPE option<record<files>> DEFAULT NONE;
-        DEFINE FIELD IF NOT EXISTS role ON TABLE account TYPE string;
+        DEFINE TABLE IF NOT EXISTS accounts SCHEMAFULL;
+        DEFINE FIELD IF NOT EXISTS username ON TABLE accounts TYPE string;
+        DEFINE FIELD IF NOT EXISTS status ON TABLE accounts TYPE option<string> DEFAULT NONE;
+        DEFINE FIELD IF NOT EXISTS password ON TABLE accounts TYPE string;
+        DEFINE FIELD IF NOT EXISTS createdAt ON TABLE accounts TYPE datetime VALUE time::now() READONLY ;
+        DEFINE FIELD IF NOT EXISTS pfp ON TABLE accounts TYPE option<record<files>> DEFAULT NONE;
+        DEFINE FIELD IF NOT EXISTS role ON TABLE accounts TYPE string;
 
         DEFINE TABLE IF NOT EXISTS tokens SCHEMAFULL;
         DEFINE FIELD IF NOT EXISTS createdAt ON TABLE tokens TYPE datetime READONLY;
         DEFINE FIELD IF NOT EXISTS role ON TABLE tokens TYPE string;
         DEFINE FIELD IF NOT EXISTS token ON TABLE tokens TYPE string READONLY;
 
-        DEFINE TABLE IF NOT EXISTS hasToken SCHEMAFULL TYPE RELATION IN account OUT tokens;
+        DEFINE TABLE IF NOT EXISTS hasToken SCHEMAFULL TYPE RELATION IN accounts OUT tokens;
         DEFINE FIELD IF NOT EXISTS createdAt ON TABLE hasToken TYPE datetime READONLY;
 
         DEFINE TABLE IF NOT EXISTS files SCHEMAFULL;
@@ -32,11 +32,27 @@ export default async function initTables(db: Surreal): Promise<boolean> {
         DEFINE FIELD IF NOT EXISTS name ON TABLE groups TYPE string;
         DEFINE FIELD IF NOT EXISTS description ON TABLE groups TYPE string;
 
-        DEFINE TABLE IF NOT EXISTS hasMembers SCHEMAFULL TYPE RELATION IN groups OUT account;
+        DEFINE TABLE IF NOT EXISTS hasMembers SCHEMAFULL TYPE RELATION IN groups OUT accounts;
         DEFINE FIELD IF NOT EXISTS joinDate ON TABLE hasMembers TYPE datetime READONLY;
         DEFINE FIELD IF NOT EXISTS role ON TABLE hasMembers TYPE string DEFAULT "user";
 
-        
+        DEFINE TABLE IF NOT EXISTS messages SCHEMAFULL;
+        DEFINE FIELD IF NOT EXISTS createdAt ON TABLE messages TYPE datetime READONLY;
+        DEFINE FIELD IF NOT EXISTS attachment ON TABLE messages TYPE option<record<files>> DEFAULT NONE;
+        DEFINE FIELD IF NOT EXISTS text ON TABLE messages TYPE option<string> DEFAULT NONE;
+        DEFINE FIELD IF NOT EXISTS sentBy ON TABLE messages TYPE record<accounts>;
+        DEFINE FIELD IF NOT EXISTS inChannel ON TABLE messages TYPE record<textChannels> | record<voiceChannels>;
+        DEFINE FIELD IF NOT EXISTS deleted ON TABLE messages TYPE bool DEFAULT FALSE;
+
+        DEFINE TABLE IF NOT EXISTS textChannels SCHEMAFULL;
+        DEFINE FIELD IF NOT EXISTS group ON TABLE textChannels TYPE record<groups> READONLY;
+        DEFINE FIELD IF NOT EXISTS createdAt ON TABLE textChannels TYPE datetime READONLY;
+        DEFINE FIELD IF NOT EXISTS role ON TABLE textChannels TYPE string DEFAULT "user";
+
+        DEFINE TABLE IF NOT EXISTS voiceChannels SCHEMAFULL;
+        DEFINE FIELD IF NOT EXISTS group ON TABLE voiceChannels TYPE record<groups> READONLY;
+        DEFINE FIELD IF NOT EXISTS createdAt ON TABLE voiceChannels TYPE datetime READONLY;
+        DEFINE FIELD IF NOT EXISTS role ON TABLE voiceChannels TYPE string DEFAULT "user";
 
     `)
     if (res)

@@ -15,7 +15,7 @@ export default async function GetGroups(): Promise<groupExtended[] | undefined> 
         return undefined;
 
     const res = await db.query<[groupExtended[]]>(`
-        SELECT *, icon.base64, icon.type FROM groups WHERE ->hasMembers->(account WHERE id == $userId);
+        SELECT *, icon.base64, icon.type FROM groups WHERE ->hasMembers->(accounts WHERE id == $userId);
     `, {userId: new StringRecordId(session.id)})
 
     console.log(res)

@@ -16,7 +16,7 @@ import Loading from "~/components/ui/loading";
 import getMembers from "../lib/messages/getMembers";
 import { group } from "../lib/types/group";
 import getGroup from "../lib/messages/getGroup";
-import { account, accountExtended } from "../lib/types/account";
+import { account, accountExtended } from "../lib/types/accounts";
 import getAccountInfo from "../lib/auth/getAccountInfo";
 import { authToken } from "../lib/auth/sessionAuth";
 

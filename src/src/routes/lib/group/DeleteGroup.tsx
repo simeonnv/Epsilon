@@ -24,7 +24,7 @@ export default async function DeleteGroupReq(groupId: string): Promise<boolean>
 
     const res = await db.query<[undefined, string | undefined]>(`
         
-        LET $ROLE = (SELECT role FROM hasMembers WHERE ->(account WHERE id == $userId) and <-(groups WHERE id == $groupId))[0].role;
+        LET $ROLE = (SELECT role FROM hasMembers WHERE ->(accounts WHERE id == $userId) and <-(groups WHERE id == $groupId))[0].role;
 
         RETURN $ROLE;
 

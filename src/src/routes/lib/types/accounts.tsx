@@ -1,6 +1,6 @@
 import { RecordId } from "surrealdb"
 
-export type account = {
+export type accounts = {
     id: RecordId,
     status: string,
     username: string,
@@ -9,7 +9,7 @@ export type account = {
     pfp: RecordId
 }
 
-export type accountExtended = {
+export type accountsExtended = {
     id: RecordId,
     status: string,
     username: string,
@@ -21,7 +21,7 @@ export type accountExtended = {
     } | undefined,
 }
 
-export type accountShortened = {
+export type accountsShortened = {
     username: string,
     status: string,
     pfp: {

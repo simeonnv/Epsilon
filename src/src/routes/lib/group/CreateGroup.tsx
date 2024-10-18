@@ -76,6 +76,7 @@ export default async function CreateGroup(name: string, description: string, ico
             );
 
 
+
             RELATE $groupRes->hasMembers->$userId SET joinDate = time::now(), role = "admin";
 
         `, {name, description, iconBase64, userId: new StringRecordId(session.id)})

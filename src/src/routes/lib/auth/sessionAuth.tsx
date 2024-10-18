@@ -2,7 +2,7 @@
 import { redirect } from "@solidjs/router";
 import {RecordId, StringRecordId} from "surrealdb";
 import * as crypto from "node:crypto";
-import { account } from "../types/account";
+import { accounts } from "../types/accounts";
 import { initDb } from "../DB/DBConnect";
 import { useSession } from "vinxi/http";
 import { tokens } from "../types/tokens";
@@ -71,7 +71,7 @@ export async function authToken(): Promise<boolean> {
 
         const res = await db.query<[tokens[] | []]>(`
         
-            SELECT token, createdAt FROM tokens WHERE <-hasToken<-(account WHERE id == $userId) and token == $Token and (createdAt > (time::now() - 14w));
+            SELECT token, createdAt FROM tokens WHERE <-hasToken<-(accounts WHERE id == $userId) and token == $Token and (createdAt > (time::now() - 14w));
         
         `, {userId: new StringRecordId(session.data.id), Token: session.data.key})
 

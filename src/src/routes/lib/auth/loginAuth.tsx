@@ -1,11 +1,11 @@
 import { RecordId } from "surrealdb"
 import { getDb, initDb } from "../DB/DBConnect"
-import { account } from "../types/account"
+import { accounts } from "../types/accounts"
 import { verifyCredentails } from "./verifyCredentials"
 import { createToken } from "./sessionAuth"
 
 
-async function querryAccount(username: string): Promise<[account[]] | string>
+async function querryAccount(username: string): Promise<[accounts[]] | string>
 {
     const db = await initDb()
     if (!db)
@@ -15,8 +15,8 @@ async function querryAccount(username: string): Promise<[account[]] | string>
         if (!db)
             return "something went wrong"      
 
-        const res = await db.query<[account[]]>(`
-             SELECT * FROM account WHERE username = $username; 
+        const res = await db.query<[accounts[]]>(`
+             SELECT * FROM accounts WHERE username = $username; 
         `, {username})
         
         console.log(res, "blej")

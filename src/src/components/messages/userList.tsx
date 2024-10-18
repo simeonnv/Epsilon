@@ -1,7 +1,7 @@
 import { Accessor, createSignal, onMount, Setter, Show } from "solid-js";
 import { Button } from "../ui/button"
 import { ImageRoot, Image, ImageFallback } from "../ui/image"
-import { accountShortened } from "~/routes/lib/types/account";
+import { accountsShortened } from "~/routes/lib/types/accounts";
 import getMembers from "~/routes/lib/messages/getMembers";
 import { base64ToFile } from "~/routes/lib/encryption/base64File";
 import getGroup from "~/routes/lib/messages/getGroup";
@@ -17,7 +17,7 @@ export default function userList({ groupId, setIsOpen, isOpen, group }:
 
     const toggleSidebar = () => setIsOpen(!isOpen());
 
-    const [members, setMembers] = createSignal<undefined | accountShortened[]>(undefined);
+    const [members, setMembers] = createSignal<undefined | accountsShortened[]>(undefined);
     
     onMount(async () => {
         console.log("NZ", await groupId)
