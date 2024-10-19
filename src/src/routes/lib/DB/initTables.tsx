@@ -45,11 +45,13 @@ export default async function initTables(db: Surreal): Promise<boolean> {
         DEFINE FIELD IF NOT EXISTS deleted ON TABLE messages TYPE bool DEFAULT FALSE;
 
         DEFINE TABLE IF NOT EXISTS textChannels SCHEMAFULL;
+        DEFINE FIELD IF NOT EXISTS name ON TABLE textChannels TYPE string;
         DEFINE FIELD IF NOT EXISTS group ON TABLE textChannels TYPE record<groups> READONLY;
         DEFINE FIELD IF NOT EXISTS createdAt ON TABLE textChannels TYPE datetime READONLY;
         DEFINE FIELD IF NOT EXISTS role ON TABLE textChannels TYPE string DEFAULT "user";
 
         DEFINE TABLE IF NOT EXISTS voiceChannels SCHEMAFULL;
+        DEFINE FIELD IF NOT EXISTS name ON TABLE voiceChannels TYPE string;
         DEFINE FIELD IF NOT EXISTS group ON TABLE voiceChannels TYPE record<groups> READONLY;
         DEFINE FIELD IF NOT EXISTS createdAt ON TABLE voiceChannels TYPE datetime READONLY;
         DEFINE FIELD IF NOT EXISTS role ON TABLE voiceChannels TYPE string DEFAULT "user";

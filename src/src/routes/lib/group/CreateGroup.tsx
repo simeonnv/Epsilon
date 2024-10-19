@@ -9,6 +9,8 @@ import { files } from "../types/files"
 import { group } from "../types/group"
 import isImage from "../types/isImage"
 import { hasMembers } from "../types/hasMembers"
+import { voiceChannels } from "../types/voiceChannels"
+import { textChannels } from "../types/textChannels"
 
 export default async function CreateGroup(name: string, description: string, icon: File | null): Promise<"success" | "error">
 {
@@ -52,7 +54,7 @@ export default async function CreateGroup(name: string, description: string, ico
 
         console.log(typeof(iconBase64.base64))
 
-        const res = await db.query<[undefined, undefined, hasMembers[]]>(`
+        const res = await db.query<[undefined[], undefined[], hasMembers[], voiceChannels[], textChannels[]]>(`
 
             LET $iconRes = (
 
@@ -75,9 +77,21 @@ export default async function CreateGroup(name: string, description: string, ico
             
             );
 
-
-
             RELATE $groupRes->hasMembers->$userId SET joinDate = time::now(), role = "admin";
+
+            CREATE textChannels SET
+                createdAt = time::now(),
+                name = "General",
+                group = <record>$groupRes[0].id,
+                role = user
+            ;
+
+            CREATE voiceChannels SET
+                createdAt = time::now(),
+                name = "General",
+                group = <record>$groupRes[0].id,
+                role = user
+            ;
 
         `, {name, description, iconBase64, userId: new StringRecordId(session.id)})
 

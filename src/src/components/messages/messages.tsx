@@ -23,7 +23,7 @@ export default function Messages({ groupId, group, user }: { groupId: string, gr
 
         <div class="flex gap-0 auto-cols-max max-h-screen h-screen">
 
-            <Channels user={user}/>
+            <Channels user={user} groupId={groupId}/>
             
             <Chat  isOpen={isOpen} setIsOpen={setIsOpen} groupId={groupId}/>
 

@@ -35,6 +35,14 @@ export default async function DeleteGroupReq(groupId: string): Promise<boolean>
         IF $ROLE = "admin" {
             DELETE $groupId
         };
+
+        IF $ROLE = "admin" {
+            DELETE textChannels WHERE group = $groupId
+        };
+
+        IF $ROLE = "admin" {
+            DELETE voiceChannels WHERE group = $groupId
+        };
             
         
 

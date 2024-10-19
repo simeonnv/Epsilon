@@ -16,7 +16,7 @@ import Loading from "~/components/ui/loading";
 import getMembers from "../lib/messages/getMembers";
 import { group } from "../lib/types/group";
 import getGroup from "../lib/messages/getGroup";
-import { account, accountExtended } from "../lib/types/accounts";
+import { accounts, accountsExtended } from "../lib/types/accounts";
 import getAccountInfo from "../lib/auth/getAccountInfo";
 import { authToken } from "../lib/auth/sessionAuth";
 
@@ -26,7 +26,7 @@ export default function Dashboard() {
   console.log(params.id)
 
   const [group, setGroup] = createSignal<group | undefined>(undefined);
-  const [user, setUser] = createSignal<accountExtended | undefined>(undefined);
+  const [user, setUser] = createSignal<accountsExtended | undefined>(undefined);
   const navigate = useNavigate();
 
 

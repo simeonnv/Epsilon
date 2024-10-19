@@ -2,18 +2,43 @@
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger, } from "~/components/ui/tooltip";
 import { Title } from "@solidjs/meta";
-import { Accessor, createSignal, onMount } from "solid-js";
+import { Accessor, createSignal, onMount, Show } from "solid-js";
 import { ImageRoot, Image, ImageFallback } from "../ui/image"
 import { accounts, accountsExtended } from "~/routes/lib/types/accounts";
 import { base64ToFile } from "~/routes/lib/encryption/base64File";
+import getTextChannels from "~/routes/lib/messages/getTextChannels";
+import group from '../group';
+import { voiceChannels } from '../../routes/lib/types/voiceChannels';
+import { textChannels } from "~/routes/lib/types/textChannels";
+import getVoiceChannels from "~/routes/lib/messages/getVoiceChannels";
+import LoadingRow from "../ui/loadingRow";
 
 
-export default function Channels({ user }: { user: Accessor<accountsExtended | undefined> }) {
+export default function Channels({ user, groupId }: { user: Accessor<accountsExtended | undefined>, groupId: string }) {
 
     const [hasPFP, setHasPFP] = createSignal<boolean>(user() === undefined
         || user()?.pfp === undefined
         || user()?.pfp?.base64 === undefined
         || user()?.pfp?.type === undefined)
+
+    const [TextChannels, setTextChannels] = createSignal<textChannels[] | undefined>(undefined)
+    const [TextLoadning, setTextLoading] = createSignal<boolean>(true)
+    const [VoiceChannels, setVoiceChannels] = createSignal<voiceChannels[] | undefined>(undefined)
+    const [VoiceLoadning, setVoiceLoading] = createSignal<boolean>(true)
+
+    onMount(async () => {
+
+        const tChannel = await getTextChannels(groupId)
+        const vChannel = await getVoiceChannels(groupId)
+        
+        setTextChannels(tChannel)
+        setTextLoading(false)
+        setVoiceChannels(vChannel)
+        setVoiceLoading(false)
+
+        console.log("textChannels", tChannel)
+        console.log("voiceChannels", vChannel)
+    })
 
 
     return (
@@ -37,15 +62,16 @@ export default function Channels({ user }: { user: Accessor<accountsExtended | u
 
                                 </div>
 
-                                
-                                {[...Array(20)].map((_, i) => (
-                                    <div class="flex items-center py-2 rounded hover:bg-secondary group">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed">
-                                            <path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z" />
-                                        </svg>
-                                        <p>general - {i + 1}</p>
-                                    </div>
-                                ))}
+                                <Show when={!TextLoadning()} fallback={<LoadingRow/>}>
+                                    {TextChannels()?.map((channel) => (
+                                        <div class="flex items-center py-2 rounded hover:bg-secondary group" id={channel.id.id.toString()}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed">
+                                                <path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z" />
+                                            </svg>
+                                            <p>{channel.name}</p>
+                                        </div>
+                                    ))}
+                                </Show>
                             </div>
                         </div>
 
@@ -62,15 +88,16 @@ export default function Channels({ user }: { user: Accessor<accountsExtended | u
                                         </svg>
                                     </Button>
                                 </div>
-
-                                {[...Array(20)].map((_, i) => (
-                                    <div class="flex items-center py-2 rounded hover:bg-secondary group">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed">
-                                            <path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z" />
-                                        </svg>
-                                        <p>general - {i + 1}</p>
-                                    </div>
-                                ))}
+                                <Show when={!VoiceLoadning()} fallback={<LoadingRow/>}>
+                                    {VoiceChannels()?.map((channel) => (
+                                        <div class="flex items-center py-2 rounded hover:bg-secondary group" id={channel.id.id.toString()}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed">
+                                                <path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z" />
+                                            </svg>
+                                            <p>{channel.name}</p>
+                                        </div>
+                                    ))}
+                                </Show>
                             </div>
 
                         </div>
