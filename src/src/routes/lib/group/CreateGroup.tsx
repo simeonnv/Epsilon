@@ -83,14 +83,14 @@ export default async function CreateGroup(name: string, description: string, ico
                 createdAt = time::now(),
                 name = "General",
                 group = <record>$groupRes[0].id,
-                role = user
+                role = "user"
             ;
 
             CREATE voiceChannels SET
                 createdAt = time::now(),
                 name = "General",
                 group = <record>$groupRes[0].id,
-                role = user
+                role = "user"
             ;
 
         `, {name, description, iconBase64, userId: new StringRecordId(session.id)})

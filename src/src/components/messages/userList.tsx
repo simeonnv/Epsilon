@@ -26,8 +26,12 @@ export default function userList({ groupId, setIsOpen, isOpen, group }:
         console.log("NZ", await groupId)
         const res = await getMembers(groupId)
         setMembers(res)
-        setMembersLoading(false);
 
+
+        setTimeout(() => {
+          setMembersLoading(false);
+        }, 300)
+        
     })
 
   

@@ -2,9 +2,17 @@ import { Button } from "../ui/button"
 import { TextField, TextFieldRoot } from "../ui/textfield";
 import { TextArea } from "../ui/textarea";
 import { ToggleButton } from "../ui/toggle";
-import { Setter, Accessor } from "solid-js";
+import { Setter, Accessor, Show } from 'solid-js';
+import { textChannels } from "~/routes/lib/types/textChannels";
+import LoadingRow from "../ui/loadingRow";
+import { Skeleton } from "@kobalte/core/src/skeleton/skeleton-root.jsx";
 
-export default function Chat({ groupId, setIsOpen, isOpen }: { groupId: string, setIsOpen: Setter<boolean>, isOpen: Accessor<boolean> })
+export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{ 
+        groupId: string,
+        setIsOpen: Setter<boolean>, 
+        isOpen: Accessor<boolean>, 
+        selectedChannel: Accessor<textChannels | undefined> 
+    })
 {
 
     const toggleSidebar = () => setIsOpen(!isOpen());
@@ -17,7 +25,7 @@ export default function Chat({ groupId, setIsOpen, isOpen }: { groupId: string, 
                     <div class="flex flex-row justify-start align-middle">
                         <div class="flex items-center py-2 rounded group">
                             <svg xmlns="http://www.w3.org/2000/svg" class="fill-primary" height="18px" viewBox="0 -960 960 960" width="18px" fill="#e8eaed"><path d="m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z" /></svg>                           
-                            <p class="px-1">announcements</p>
+                            <p class="px-1">{selectedChannel()?.name}</p>
                         </div>
                     </div>
                     
