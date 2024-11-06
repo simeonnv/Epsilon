@@ -2,10 +2,12 @@ import { Button } from "../ui/button"
 import { TextField, TextFieldRoot } from "../ui/textfield";
 import { TextArea } from "../ui/textarea";
 import { ToggleButton } from "../ui/toggle";
-import { Setter, Accessor, Show } from 'solid-js';
+import { Setter, Accessor, Show, createSignal } from 'solid-js';
 import { textChannels } from "~/routes/lib/types/textChannels";
 import LoadingRow from "../ui/loadingRow";
 import { Skeleton } from "@kobalte/core/src/skeleton/skeleton-root.jsx";
+import { getSessionJson } from "~/routes/lib/auth/sessionAuth";
+import sendMessage from "~/routes/lib/messages/sendMessage";
 
 export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{ 
         groupId: string,
@@ -16,6 +18,19 @@ export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{
 {
 
     const toggleSidebar = () => setIsOpen(!isOpen());
+    const [text, setText] = createSignal<string>("");
+
+    const onSubmit = async (e: SubmitEvent) => {
+		e.preventDefault()
+        console.log("ZAZAZADASDASDASASD")
+        const id = selectedChannel()?.id
+        if (id === undefined)
+            return
+        
+        const res = sendMessage(text() , id.id.toString())
+        console.log("send message ", res)
+        
+	};
 
     return(
         <div class="transition-all duration-300 ease-in-out h-screen max-h-screen justify-between flex flex-col">
@@ -49,19 +64,35 @@ export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{
                         bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh                         
                         <img class="h-64 w-64" src="/alien.png"></img>
                     </p>
+
+                    <p> izrechenie</p>
                     
                 </div>
 
 
                 <div class=" w-full py-1 max-h-60 justify-end align-end">
                     <div class="overflow-y-auto overflow-x-hidden">
-                        <TextFieldRoot class="text-white w-full resize-none">
-                            <TextArea 
-                                autoResize  
-                                class="resize-none max-h-40 overflow-y-auto hoverScroll"  // Added max-height and overflow
-                                placeholder="Type your message here."
-                            />
-                        </TextFieldRoot>
+                        <form onSubmit={onSubmit} class="flex flex-row">
+                            <TextFieldRoot class="text-white w-full resize-none" onChange={setText}>
+                                <TextArea 
+                                    name="favorite-fruit"
+                                    data-valid
+                                    required
+                                    submitOnEnter
+                                    autoResize
+                                    class="resize-none max-h-20 overflow-y-auto hoverScroll"  // Added max-height and overflow
+                                    placeholder="Type your message here."
+                                />
+                            </TextFieldRoot>
+                            
+                            <div class=" justify-end align-middle">
+                                <div class="flex items-center group h-full justify-center align-middle">
+                                    <Button type="submit" variant="outline" class="h-full items-center justify-center align-middle">
+                                        <svg class="-rotate-45" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"/></svg>
+                                    </Button>
+                                </div>                    
+                            </div>
+                        </form>
                     </div>
                 </div>
         </div>
