@@ -2,12 +2,14 @@ import { Button } from "../ui/button"
 import { TextField, TextFieldRoot } from "../ui/textfield";
 import { TextArea } from "../ui/textarea";
 import { ToggleButton } from "../ui/toggle";
-import { Setter, Accessor, Show, createSignal } from 'solid-js';
+import { Setter, Accessor, Show, createSignal, onMount, createEffect } from 'solid-js';
 import { textChannels } from "~/routes/lib/types/textChannels";
 import LoadingRow from "../ui/loadingRow";
 import { Skeleton } from "@kobalte/core/src/skeleton/skeleton-root.jsx";
 import { getSessionJson } from "~/routes/lib/auth/sessionAuth";
 import sendMessage from "~/routes/lib/messages/sendMessage";
+import getMessages from "~/routes/lib/messages/getMessages";
+import { messages } from '../../routes/lib/types/messages';
 
 export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{ 
         groupId: string,
@@ -19,6 +21,7 @@ export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{
 
     const toggleSidebar = () => setIsOpen(!isOpen());
     const [text, setText] = createSignal<string>("");
+    const [messages, setMessages] = createSignal<messages[] | undefined>(undefined);
 
     const onSubmit = async (e: SubmitEvent) => {
 		e.preventDefault()
@@ -30,7 +33,32 @@ export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{
         const res = sendMessage(text() , id.id.toString())
         console.log("send message ", res)
         
+        const resres = await fetchMessages()
+        console.log("REEASDADADA ", resres)
+        
 	};
+
+    const fetchMessages = async () => {
+        const channelId = selectedChannel()?.id.id.toString()
+        if (!channelId)
+            return
+        const res = await getMessages(channelId)
+        if (res)
+            setMessages(res)
+        return res
+    }
+
+    onMount(async () => {
+        const res = await fetchMessages()
+        console.log(res)
+    })
+
+    createEffect(async () => {
+        if (!selectedChannel())
+            return
+        const res = await fetchMessages()
+        console.log(res)
+    })
 
     return(
         <div class="transition-all duration-300 ease-in-out h-screen max-h-screen justify-between flex flex-col">
@@ -58,15 +86,16 @@ export default function Chat({ groupId, setIsOpen, isOpen, selectedChannel }:{
                     
                     <h1 class="text-2xl font-bold">Dynamic Text</h1>
                     <p class=" flex justify-center align-middle flex-col">
-                        bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh 
-                        bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh 
-                        bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh 
-                        bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh  bleh pluh pluh bleh pluh pluh bleh pluh pluh                         
+                        bleh bleh bleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh blehbleh bleh
                         <img class="h-64 w-64" src="/alien.png"></img>
                     </p>
+                    <div class=" flex justify-center align-middle flex-col w-full flex-grow">
+                        {messages()?.map(message => (
 
-                    <p> izrechenie</p>
-                    
+                            <p>{message.text}</p>
+
+                        ))}
+                    </div>
                 </div>
 
 
